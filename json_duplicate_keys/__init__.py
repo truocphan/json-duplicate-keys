@@ -1,7 +1,5 @@
-import json
-
 # # # # # # # # # # # # # # # # # # # # # # #
-# # # # # # # # # # Loads # # # # # # # # # #
+# # # # # # # # # # loads # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # #
 """
 >>> INPUT: '{"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "22.3.3", "version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}'
@@ -9,6 +7,7 @@ import json
 <<< OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': '22.3.3', 'version{{{_2_}}}': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
 """
 def loads(Jstr, dupSign_start="{", dupSign_end="}", _isDebug_=False):
+	import json
 	import re
 	from collections import OrderedDict
 	import traceback
@@ -117,7 +116,32 @@ def loads(Jstr, dupSign_start="{", dupSign_end="}", _isDebug_=False):
 
 
 # # # # # # # # # # # # # # # # # # # # # # #
-# # # # # # # # # # Dumps # # # # # # # # # #
+# # # # # # # # # # load  # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # #
+"""
+"""
+def load(Jfilepath, dupSign_start="{", dupSign_end="}", _isDebug_=False):
+	import traceback
+
+	try:
+		Jfile = open(Jfilepath)
+		Jstr = Jfile.read()
+		Jfile.close()
+	except:
+		if _isDebug_: traceback.print_exc()
+		return None
+
+	return loads(Jstr, dupSign_start=dupSign_start, dupSign_end=dupSign_end, _isDebug_=_isDebug_)
+# # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # #
+
+
+
+
+
+# # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # dumps # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # #
 """
 >>> INPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': '22.3.14', 'release': [{'version': '22.3.3', 'version{{{_2_}}}': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
@@ -125,6 +149,7 @@ def loads(Jstr, dupSign_start="{", dupSign_end="}", _isDebug_=False):
 <<< OUTPUT: '{"author": "truocphan", "version": "22.3.3", "version": "22.3.14", "release": [{"version": "22.3.3", "version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}'
 """
 def dumps(Jobj, dupSign_start="{", dupSign_end="}", _isDebug_=False, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False):
+	import json
 	import re
 	from collections import OrderedDict
 	import traceback
@@ -165,7 +190,35 @@ def dumps(Jobj, dupSign_start="{", dupSign_end="}", _isDebug_=False, skipkeys=Fa
 
 
 # # # # # # # # # # # # # # # # # # # # # # #
-# # # # # # # # # Flatten # # # # # # # # # #
+# # # # # # # # # # dump  # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # #
+"""
+"""
+def dump(Jobj, Jfilepath, dupSign_start="{", dupSign_end="}", _isDebug_=False, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False):
+	import traceback
+
+	Jstr = dumps(Jobj, dupSign_start=dupSign_start, dupSign_end=dupSign_end, _isDebug_=_isDebug_, skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular, allow_nan=allow_nan, cls=cls, indent=indent, separators=separators, default=default, sort_keys=sort_keys)
+
+	if Jstr == None:
+		return False
+	try:
+		Jfile = open(Jfilepath, "w")
+		Jfile.write(Jstr)
+		Jfile.close()
+		return True
+	except:
+		if _isDebug_: traceback.print_exc()
+		return False
+# # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # #
+
+
+
+
+
+# # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # flatten # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # #
 """
 >>> INPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': '22.3.14', 'release': [{'version': '22.3.3', 'version{{{_2_}}}': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
@@ -237,7 +290,7 @@ def flatten(Jobj, separator="||", parse_index="$", _isDebug_=False):
 
 
 # # # # # # # # # # # # # # # # # # # # # # #
-# # # # # # # # # Unflatten # # # # # # # # #
+# # # # # # # # # unflatten # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # #
 """
 >>> INPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': '22.3.14', 'release||$0$||version': '22.3.3', 'release||$0$||version{{{_2_}}}': 'latest', 'snapshot||author': 'truocphan', 'snapshot||version': '22.3.3', 'snapshot||release||$0$||version': '22.3.14'}
