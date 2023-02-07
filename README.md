@@ -1,5 +1,5 @@
 # JSON Duplicate Keys
-Flatten / Unflatten and Loads / Dumps JSON object with Duplicate Keys
+Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys
 
 ## Installation
 ```console
