@@ -7,11 +7,11 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
 	name="json_duplicate_keys",
-	version="22.5.28",
+	version="23.2.7",
 	author="Truoc Phan",
 	license="MIT",
 	author_email="truocphan112017@gmail.com",
-	description="Flatten / Unflatten and Loads / Dumps JSON object with Duplicate Keys",
+	description="Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys",
 	long_description=long_description,
 	long_description_content_type="text/markdown",
 	install_requires=[],
