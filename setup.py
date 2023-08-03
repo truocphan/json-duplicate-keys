@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
 	name="json_duplicate_keys",
-	version="23.2.7",
+	version="23.8.3",
 	author="Truoc Phan",
 	license="MIT",
 	author_email="truocphan112017@gmail.com",
