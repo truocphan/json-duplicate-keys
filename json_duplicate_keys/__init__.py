@@ -1,7 +1,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # loads # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False):
+def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=True):
 	import json, re
 	from collections import OrderedDict
 
@@ -108,7 +108,7 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False):
 
 			return JSON_DUPLICATE_KEYS(Jobj)
 	except Exception as e:
-		print(e)
+		if _isDebug_: print(e)
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -117,15 +117,15 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False):
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # load # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-def load(Jfilepath, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False):
+def load(Jfilepath, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=True):
 	try:
 		Jfile = open(Jfilepath)
 		Jstr = Jfile.read()
 		Jfile.close()
 
-		return loads(Jstr, dupSign_start=dupSign_start, dupSign_end=dupSign_end, ordered_dict=ordered_dict)
+		return loads(Jstr, dupSign_start=dupSign_start, dupSign_end=dupSign_end, ordered_dict=ordered_dict, _isDebug_=_isDebug_)
 	except Exception as e:
-		print(e)
+		if _isDebug_: print(e)
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -138,7 +138,6 @@ def load(Jfilepath, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False):
 class JSON_DUPLICATE_KEYS:
 	def __init__(self, Jobj):
 		from collections import OrderedDict
-		self.__Jtmp = None
 		self.__Jobj = dict()
 		if type(Jobj) in [dict, OrderedDict, list]:
 			self.__Jobj = Jobj
@@ -156,7 +155,7 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # get # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	def get(self, name, separator="||", parse_index="$"):
+	def get(self, name, separator="||", parse_index="$", _isDebug_=True):
 		import re
 		from collections import OrderedDict
 
@@ -173,10 +172,10 @@ class JSON_DUPLICATE_KEYS:
 					Jval = Jobj[int(name_split[i].split(parse_index)[1])]
 					Jobj = Jobj[int(name_split[i].split(parse_index)[1])]
 				else:
-					print(f"KeyNotFound: {separator.join(name_split[:i+1])}")
+					if _isDebug_: print(f"KeyNotFound: {separator.join(name_split[:i+1])}")
 					return "JSON_DUPLICATE_KEYS_NOT_FOUND"
 			except Exception as e:
-				print(f"KeyIndexOutOfRange: {separator.join(name_split[:i+1])}")
+				if _isDebug_: print(f"KeyIndexOutOfRange: {separator.join(name_split[:i+1])}")
 				return "JSON_DUPLICATE_KEYS_NOT_FOUND"
 		return Jval
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -188,10 +187,21 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # set # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def set(self, name, value, Jobj=None, separator="||", parse_index="$", dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False):
-		import re
+		import re, copy
 		from collections import OrderedDict
 
-		print("In progress")
+		if Jobj == None:
+			self.__Jtmp = copy.deepcopy(self.__Jobj)
+
+		name_split = name.split(separator)
+		for i in range(len(name_split),0,-1):
+			if self.get(separator.join(name_split[:i]), _isDebug_=False) == "JSON_DUPLICATE_KEYS_NOT_FOUND":
+				if len(name_split[i:]) > 0:
+					value = self.unflatten({separator.join(name_split[i:]): value})
+				self.__Jobj[separator.join(name_split[:i])] = value
+				self.unflatten()
+				break
+		self.__Jobj[name+dupSign_start+"_2_"+dupSign_end] = value
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -342,7 +352,7 @@ class JSON_DUPLICATE_KEYS:
 		import re
 		from collections import OrderedDict
 
-		if len(self.__Jobj) > 0:
+		if type(self.__Jobj) in [dict, OrderedDict] and len(self.__Jobj) > 0:
 			Jobj = list() if len([k for k in self.__Jobj.keys() if re.compile("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$").match(str(k).split(separator)[0])]) == len(self.__Jobj.keys()) else OrderedDict() if ordered_dict else dict()
 
 			for k, v in self.__Jobj.items():
