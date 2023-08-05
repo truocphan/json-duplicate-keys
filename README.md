@@ -230,10 +230,31 @@ print(JDKSObject_load.getObject())
 
 ### JSON_DUPLICATE_KEYS.flatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=True)
 _Flatten a JSON object to a single key-value pairs_
+- `separator`: 
+- `parse_index`: 
+- `ordered_dict`: preserves the order in which the Keys are inserted
+- `_isDebug_`: Show/ Hide debug error messages
 ```python
+import json_duplicate_keys as jdks
+
+Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}'
+
+JDKSObject = jdks.loads(Jstr)
+
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
+
+JDKSObject.flatten()
+
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release||$0$||version': 'latest', 'snapshot||author': 'truocphan', 'snapshot||version': '22.3.3', 'snapshot||release||$0$||version': 'latest'}
 ```
 
 ### JSON_DUPLICATE_KEYS.unflatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=True)
 _Unflatten a flattened JSON object back to a JSON object_
+- `separator`: 
+- `parse_index`: 
+- `ordered_dict`: preserves the order in which the Keys are inserted
+- `_isDebug_`: Show/ Hide debug error messages
 ```python
 ```

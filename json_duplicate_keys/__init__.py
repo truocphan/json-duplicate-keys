@@ -325,64 +325,70 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	#  # # # # # # # # # # # # # flatten # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# def flatten(self, separator="||", parse_index="$", ordered_dict=False):
-	# 	from collections import OrderedDict
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	 # # # # # # # # # # # # # flatten # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	def flatten(self, separator="||", parse_index="$", ordered_dict=False, _isDebug_=True):
+		from collections import OrderedDict
 
-	# 	if len(self.__Jobj) > 0:
-	# 		Jflat = dict()
-	# 		if ordered_dict:
-	# 			Jflat = OrderedDict()
+		if type(self.getObject()) in [list, dict, OrderedDict]:
+			if len(self.getObject()) > 0:
+				try:
+					Jflat = dict()
+					if ordered_dict:
+						Jflat = OrderedDict()
 
-	# 		def __convert_Jobj_to_Jflat(Jobj, key=None):
-	# 			if type(Jobj) in [dict, OrderedDict]:
-	# 				if len(Jobj) == 0:
-	# 					Jflat[key] = dict()
-	# 					if ordered_dict:
-	# 						Jflat[key] = OrderedDict()
-	# 				else:
-	# 					for k,v in Jobj.items():
-	# 						_Jobj = v
-	# 						_key = "{key}{separator}{k}".format(key=key,separator=separator,k=k) if key != None else "{k}".format(k=k)
+					def __convert_Jobj_to_Jflat(Jobj, key=None):
+						if type(Jobj) in [dict, OrderedDict]:
+							if len(Jobj) == 0:
+								Jflat[key] = dict()
+								if ordered_dict:
+									Jflat[key] = OrderedDict()
+							else:
+								for k,v in Jobj.items():
+									_Jobj = v
+									_key = "{key}{separator}{k}".format(key=key,separator=separator,k=k) if key != None else "{k}".format(k=k)
 
-	# 						__convert_Jobj_to_Jflat(_Jobj, _key)
-	# 			elif type(Jobj) == list:
-	# 				if len(Jobj) == 0:
-	# 					Jflat[key] = list()
-	# 				else:
-	# 					for i,v in enumerate(Jobj):
-	# 						_Jobj = v
-	# 						_key = "{key}{separator}{parse_index}{i}{parse_index}".format(key=key, separator=separator, parse_index=parse_index, i=i) if key != None else "{parse_index}{i}{parse_index}".format(parse_index=parse_index, i=i)
+									__convert_Jobj_to_Jflat(_Jobj, _key)
+						elif type(Jobj) == list:
+							if len(Jobj) == 0:
+								Jflat[key] = list()
+							else:
+								for i,v in enumerate(Jobj):
+									_Jobj = v
+									_key = "{key}{separator}{parse_index}{i}{parse_index}".format(key=key, separator=separator, parse_index=parse_index, i=i) if key != None else "{parse_index}{i}{parse_index}".format(parse_index=parse_index, i=i)
 
-	# 						__convert_Jobj_to_Jflat(_Jobj, _key)
-	# 			else:
-	# 				Jflat[key] = Jobj
+									__convert_Jobj_to_Jflat(_Jobj, _key)
+						else:
+							Jflat[key] = Jobj
 
 
-	# 		try:
-	# 			if type(separator) not in [str, unicode] or len(separator) == 0: separator = "||"
-	# 		except Exception as e:
-	# 			if type(separator) != str or len(separator) == 0: separator = "||"
+					try:
+						if type(separator) not in [str, unicode] or len(separator) == 0: separator = "||"
+					except Exception as e:
+						if type(separator) != str or len(separator) == 0: separator = "||"
 
-	# 		try:
-	# 			if type(parse_index) not in [str, unicode] or len(parse_index) == 0: parse_index = "$"
-	# 		except Exception as e:
-	# 			if type(parse_index) != str or len(parse_index) == 0: parse_index = "$"
+					try:
+						if type(parse_index) not in [str, unicode] or len(parse_index) == 0: parse_index = "$"
+					except Exception as e:
+						if type(parse_index) != str or len(parse_index) == 0: parse_index = "$"
 
-	# 		__convert_Jobj_to_Jflat(self.__Jobj)
+					__convert_Jobj_to_Jflat(self.getObject())
 
-	# 		self.__Jobj = Jflat
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+					self.__Jobj = Jflat
+				except Exception as e:
+					if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+		else:
+			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be list, dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	#  # # # # # # # # # # # # # unflatten # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# def unflatten(self, separator="||", parse_index="$", ordered_dict=False):
+	# def unflatten(self, separator="||", parse_index="$", ordered_dict=False, _isDebug_=True):
 	# 	import re
 	# 	from collections import OrderedDict
 
