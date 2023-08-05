@@ -227,25 +227,28 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # update # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# def update(self, name, value, separator="||", parse_index="$", _isDebug_=True):
-	# 	import re
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # update # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	def update(self, name, value, separator="||", parse_index="$", _isDebug_=True):
+		import re
 
-	# 	if self.get(name, separator=separator, parse_index=parse_index) != "JSON_DUPLICATE_KEYS_NOT_FOUND":
-	# 		exec_expression = "self.getObject()"
-	# 		for k in name.split(separator):
-	# 			if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", k):
-	# 				exec_expression += "["+k.split(parse_index)[1]+"]"
-	# 			else:
-	# 				exec_expression += "["+repr(k)+"]"
+		if self.get(name, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_) != "JSON_DUPLICATE_KEYS_NOT_FOUND":
+			try:
+				exec_expression = "self.getObject()"
 
-	# 		exec(exec_expression+"="+str(value))
+				for k in name.split(separator):
+					if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", k):
+						exec_expression += "["+k.split(parse_index)[1]+"]"
+					else:
+						exec_expression += "["+repr(k)+"]"
 
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+				exec(exec_expression+"="+repr(value))
+			except Exception as e:
+				if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

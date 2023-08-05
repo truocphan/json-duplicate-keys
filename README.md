@@ -129,7 +129,26 @@ print(JDKSObject.getObject())
 
 ### JSON_DUPLICATE_KEYS.update(`name`, `value`, `separator`="||", `parse_index`="$", `_isDebug_`=True)
 _Update new `value` for existing `name` in the JSON object_
+- `name`: the key name of the JSON object. Supported flatten key name format
+- `value`: new value for key `name`
+- `separator`: 
+- `parse_index`: 
+- `_isDebug_`: Show/ Hide debug error messages
 ```python
+import json_duplicate_keys as jdks
+
+Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}'
+
+JDKSObject = jdks.loads(Jstr)
+
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
+
+JDKSObject.update("version{{{_2_}}}", ["22.3.3", "latest"])
+JDKSObject.update("snapshot||version", "latest")
+
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': ['22.3.3', 'latest'], 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': 'latest', 'release': [{'version': 'latest'}]}}
 ```
 
 ### JSON_DUPLICATE_KEYS.delete(`name`, `separator`="||", `parse_index`="$", `_isDebug_`=True)
