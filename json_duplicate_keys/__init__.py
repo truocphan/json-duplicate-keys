@@ -2,10 +2,10 @@
 # # # # # # # # # # # # # # # loads # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=True):
-	if type(Jstr) in [str]:
-		import json, re
-		from collections import OrderedDict
+	import json, re
+	from collections import OrderedDict
 
+	if type(Jstr) in [str]:
 		def __convert_Jloads_to_Jobj(Jloads, Jobj):
 			if type(Jloads) in [dict, OrderedDict]:
 				for k in Jloads.keys():
@@ -108,8 +108,12 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 				__convert_Jloads_to_Jobj(Jloads, Jobj)
 
 				return JSON_DUPLICATE_KEYS(Jobj)
+			else:
+				if _isDebug_: print("\x1b[31m[-] DataError: Invalid JSON format\x1b[0m")
 		except Exception as e:
-			if _isDebug_: print(e)
+			if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+	else:
+		if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be str, not {}\x1b[0m".format(type(Jstr)))
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -126,7 +130,7 @@ def load(Jfilepath, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, 
 
 		return loads(Jstr, dupSign_start=dupSign_start, dupSign_end=dupSign_end, ordered_dict=ordered_dict, _isDebug_=_isDebug_)
 	except Exception as e:
-		if _isDebug_: print(e)
+		if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -153,56 +157,71 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # get # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# def get(self, name, separator="||", parse_index="$", _isDebug_=True):
-	# 	import re
-	# 	from collections import OrderedDict
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # get # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	def get(self, name, separator="||", parse_index="$", _isDebug_=True):
+		import re
+		from collections import OrderedDict
 
-	# 	Jobj = self.__Jobj
-	# 	Jval = "JSON_DUPLICATE_KEYS_NOT_FOUND"
-	# 	name_split = name.split(separator)
+		if type(self.getObject()) in [list, dict, OrderedDict]:
+			try:
+				Jobj = self.__Jobj
+				Jval = "JSON_DUPLICATE_KEYS_NOT_FOUND"
+				name_split = name.split(separator)
 
-	# 	for i in range(len(name_split)):
-	# 		try:
-	# 			if type(Jobj) in [dict, OrderedDict] and name_split[i] in Jobj.keys():
-	# 				Jval = Jobj[name_split[i]]
-	# 				Jobj = Jobj[name_split[i]]
-	# 			elif type(Jobj) in [list] and re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", name_split[i]):
-	# 				Jval = Jobj[int(name_split[i].split(parse_index)[1])]
-	# 				Jobj = Jobj[int(name_split[i].split(parse_index)[1])]
-	# 			else:
-	# 				if _isDebug_: print(f"KeyNotFound: {separator.join(name_split[:i+1])}")
-	# 				return "JSON_DUPLICATE_KEYS_NOT_FOUND"
-	# 		except Exception as e:
-	# 			if _isDebug_: print(f"KeyIndexOutOfRange: {separator.join(name_split[:i+1])}")
-	# 			return "JSON_DUPLICATE_KEYS_NOT_FOUND"
-	# 	return Jval
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+				for i in range(len(name_split)):
+					if type(Jobj) in [dict, OrderedDict] and name_split[i] in Jobj.keys():
+						Jval = Jobj[name_split[i]]
+						Jobj = Jobj[name_split[i]]
+					elif type(Jobj) in [list] and re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", name_split[i]):
+						Jval = Jobj[int(name_split[i].split(parse_index)[1])]
+						Jobj = Jobj[int(name_split[i].split(parse_index)[1])]
+					else:
+						if _isDebug_: print("\x1b[31m[-] KeyNotFoundError: \x1b[0m"+separator.join(name_split[:i+1]))
+						return "JSON_DUPLICATE_KEYS_NOT_FOUND"
+				return Jval
+			except Exception as e:
+				if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+				return "JSON_DUPLICATE_KEYS_NOT_FOUND"
+		else:
+			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be list, dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
+			return "JSON_DUPLICATE_KEYS_NOT_FOUND"
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # set # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# def set(self, name, value, Jobj=None, separator="||", parse_index="$", dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False):
+	# def set(self, name, value, separator="||", parse_index="$", dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=True):
 	# 	import re, copy
 	# 	from collections import OrderedDict
 
-	# 	if Jobj == None:
-	# 		self.__Jtmp = copy.deepcopy(self.__Jobj)
+	# 	if type(self.getObject()) in [list, dict, OrderedDict]:
+	# 		name_split = name.split(separator)
+	# 		for i in range(len(name_split),0,-1):
+	# 			name_split_first = separator.join(name_split[:i-1])
+	# 			name_split_current = name_split[i-1]
+	# 			name_split_last = separator.join(name_split[i:])
 
-	# 	name_split = name.split(separator)
-	# 	for i in range(len(name_split),0,-1):
-	# 		if self.get(separator.join(name_split[:i]), _isDebug_=False) == "JSON_DUPLICATE_KEYS_NOT_FOUND":
-	# 			if len(name_split[i:]) > 0:
-	# 				value = self.unflatten({separator.join(name_split[i:]): value})
-	# 			self.__Jobj[separator.join(name_split[:i])] = value
-	# 			self.unflatten()
-	# 			break
-	# 	self.__Jobj[name+dupSign_start+"_2_"+dupSign_end] = value
+	# 			if self.get(separator.join([name_split_first, name_split_current]), separator=separator, parse_index=parse_index, _isDebug_=False) != "JSON_DUPLICATE_KEYS_NOT_FOUND":
+	# 				if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", name_split_current):
+	# 					k = separator.join([ name_split_first, parse_index+str(len(self.get(name_split_first, separator=separator, parse_index=parse_index, _isDebug_=False)))+parse_index, separator.join([re.sub("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$",parse_index+"0"+parse_index, ns) for ns in name_split_last.split(separator)]) ])
+	# 					self.flatten()
+	# 					self.__Jobj[k] = value
+	# 					self.unflatten()
+	# 				else:
+	# 					i = 2
+	# 					while True:
+	# 						if self.get(separator.join(name_split_first, name_split_current)+dupSign_start+"_"+str(i)+"_"+dupSign_end, separator=separator, parse_index=parse_index, _isDebug_=False) == "JSON_DUPLICATE_KEYS_NOT_FOUND":
+	# 							self.flatten()
+	# 							self.__Jobj[separator.join([separator.join(name_split_first, name_split_current)+dupSign_start+"_"+str(i)+"_"+dupSign_end]), separator.join([re.sub("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$",parse_index+"0"+parse_index, ns) for ns in name_split_last.split(separator)])] = value
+	# 							self.unflatten()
+	# 							break
+	# 						i += 1
+	# 				break
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -211,7 +230,7 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # update # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# def update(self, name, value, separator="||", parse_index="$"):
+	# def update(self, name, value, separator="||", parse_index="$", _isDebug_=True):
 	# 	import re
 
 	# 	if self.get(name, separator=separator, parse_index=parse_index) != "JSON_DUPLICATE_KEYS_NOT_FOUND":

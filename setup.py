@@ -1,20 +1,19 @@
-# python setup.py bdist_wheel sdist
-# twine upload --skip-existing dist/*
 import setuptools
+import datetime
 
 with open("README.md", "r") as fh:
 	long_description = fh.read()
 
 setuptools.setup(
 	name="json_duplicate_keys",
-	version="23.8.4",
+	version=datetime.datetime.now().strftime("%Y.%m.%d"),
 	author="Truoc Phan",
 	license="MIT",
 	author_email="truocphan112017@gmail.com",
 	description="Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys",
 	long_description=long_description,
 	long_description_content_type="text/markdown",
-	install_requires=[],
+	install_requires=open("requirements.txt").read().split(),
 	url="https://github.com/truocphan/json_duplicate_keys",
 	classifiers=[
 		"Programming Language :: Python :: 3",
