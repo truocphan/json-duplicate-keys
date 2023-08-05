@@ -167,7 +167,7 @@ class JSON_DUPLICATE_KEYS:
 		if type(self.getObject()) in [list, dict, OrderedDict]:
 			try:
 				Jobj = self.__Jobj
-				Jval = "JSON_DUPLICATE_KEYS_NOT_FOUND"
+				Jval = "JSON_DUPLICATE_KEYS_ERROR"
 				name_split = name.split(separator)
 
 				for i in range(len(name_split)):
@@ -179,14 +179,14 @@ class JSON_DUPLICATE_KEYS:
 						Jobj = Jobj[int(name_split[i].split(parse_index)[1])]
 					else:
 						if _isDebug_: print("\x1b[31m[-] KeyNotFoundError: \x1b[0m"+separator.join(name_split[:i+1]))
-						return "JSON_DUPLICATE_KEYS_NOT_FOUND"
+						return "JSON_DUPLICATE_KEYS_ERROR"
 				return Jval
 			except Exception as e:
 				if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
-				return "JSON_DUPLICATE_KEYS_NOT_FOUND"
+				return "JSON_DUPLICATE_KEYS_ERROR"
 		else:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be list, dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
-			return "JSON_DUPLICATE_KEYS_NOT_FOUND"
+			return "JSON_DUPLICATE_KEYS_ERROR"
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -206,7 +206,7 @@ class JSON_DUPLICATE_KEYS:
 	# 			name_split_current = name_split[i-1]
 	# 			name_split_last = separator.join(name_split[i:])
 
-	# 			if self.get(separator.join([name_split_first, name_split_current]), separator=separator, parse_index=parse_index, _isDebug_=False) != "JSON_DUPLICATE_KEYS_NOT_FOUND":
+	# 			if self.get(separator.join([name_split_first, name_split_current]), separator=separator, parse_index=parse_index, _isDebug_=False) != "JSON_DUPLICATE_KEYS_ERROR":
 	# 				if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", name_split_current):
 	# 					k = separator.join([ name_split_first, parse_index+str(len(self.get(name_split_first, separator=separator, parse_index=parse_index, _isDebug_=False)))+parse_index, separator.join([re.sub("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$",parse_index+"0"+parse_index, ns) for ns in name_split_last.split(separator)]) ])
 	# 					self.flatten()
@@ -215,7 +215,7 @@ class JSON_DUPLICATE_KEYS:
 	# 				else:
 	# 					i = 2
 	# 					while True:
-	# 						if self.get(separator.join(name_split_first, name_split_current)+dupSign_start+"_"+str(i)+"_"+dupSign_end, separator=separator, parse_index=parse_index, _isDebug_=False) == "JSON_DUPLICATE_KEYS_NOT_FOUND":
+	# 						if self.get(separator.join(name_split_first, name_split_current)+dupSign_start+"_"+str(i)+"_"+dupSign_end, separator=separator, parse_index=parse_index, _isDebug_=False) == "JSON_DUPLICATE_KEYS_ERROR":
 	# 							self.flatten()
 	# 							self.__Jobj[separator.join([separator.join(name_split_first, name_split_current)+dupSign_start+"_"+str(i)+"_"+dupSign_end]), separator.join([re.sub("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$",parse_index+"0"+parse_index, ns) for ns in name_split_last.split(separator)])] = value
 	# 							self.unflatten()
@@ -233,7 +233,7 @@ class JSON_DUPLICATE_KEYS:
 	def update(self, name, value, separator="||", parse_index="$", _isDebug_=True):
 		import re
 
-		if self.get(name, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_) != "JSON_DUPLICATE_KEYS_NOT_FOUND":
+		if self.get(name, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_) != "JSON_DUPLICATE_KEYS_ERROR":
 			try:
 				exec_expression = "self.getObject()"
 
@@ -257,7 +257,7 @@ class JSON_DUPLICATE_KEYS:
 	def delete(self, name, separator="||", parse_index="$", _isDebug_=True):
 		import re
 
-		if self.get(name, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_) != "JSON_DUPLICATE_KEYS_NOT_FOUND":
+		if self.get(name, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_) != "JSON_DUPLICATE_KEYS_ERROR":
 			try:
 				exec_expression = "del self.getObject()"
 
@@ -275,47 +275,54 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	#  # # # # # # # # # # # # # # dumps # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# def dumps(self, dupSign_start="{{{", dupSign_end="}}}", skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False):
-	# 	import json, re
-	# 	from collections import OrderedDict
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	 # # # # # # # # # # # # # # dumps # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	def dumps(self, dupSign_start="{{{", dupSign_end="}}}", _isDebug_=True, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False):
+		import json, re
+		from collections import OrderedDict
 
-	# 	try:
-	# 		if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
-	# 	except Exception as e:
-	# 		if type(dupSign_start) != str: dupSign_start = "{{{"
+		if type(self.getObject()) in [list, dict, OrderedDict]:
+			try:
+				if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
+			except Exception as e:
+				if type(dupSign_start) != str: dupSign_start = "{{{"
 
-	# 	dupSign_start_escape_regex = re.escape(json.dumps({dupSign_start:""})[2:-6])
-
-
-	# 	try:
-	# 		if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
-	# 	except Exception as e:
-	# 		if type(dupSign_end) != str: dupSign_end = "}}}"
-
-	# 	dupSign_end_escape_regex = re.escape(json.dumps({dupSign_end:""})[2:-6])
+			dupSign_start_escape_regex = re.escape(json.dumps({dupSign_start:""})[2:-6])
 
 
-	# 	return re.sub(r'{dupSign_start}_\d+_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape_regex, dupSign_end=dupSign_end_escape_regex), '":', json.dumps(self.__Jobj, skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular, allow_nan=allow_nan, cls=cls, indent=indent, separators=separators, default=default, sort_keys=sort_keys))
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+			try:
+				if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
+			except Exception as e:
+				if type(dupSign_end) != str: dupSign_end = "}}}"
+
+			dupSign_end_escape_regex = re.escape(json.dumps({dupSign_end:""})[2:-6])
 
 
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	#  # # # # # # # # # # # # # # dump  # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# def dump(self, Jfilepath, dupSign_start="{{{", dupSign_end="}}}", skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False):
-	# 	Jstr = self.dumps(dupSign_start=dupSign_start, dupSign_end=dupSign_end, skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular, allow_nan=allow_nan, cls=cls, indent=indent, separators=separators, default=default, sort_keys=sort_keys)
+			return re.sub(r'{dupSign_start}_\d+_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape_regex, dupSign_end=dupSign_end_escape_regex), '":', json.dumps(self.getObject(), skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular, allow_nan=allow_nan, cls=cls, indent=indent, separators=separators, default=default, sort_keys=sort_keys))
+		else:
+			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be list, dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
+			return "JSON_DUPLICATE_KEYS_ERROR"
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-	# 	Jfile = open(Jfilepath, "w")
-	# 	Jfile.write(Jstr)
-	# 	Jfile.close()
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	 # # # # # # # # # # # # # # dump  # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	def dump(self, Jfilepath, dupSign_start="{{{", dupSign_end="}}}", _isDebug_=True, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False):
+		Jstr = self.dumps(dupSign_start=dupSign_start, dupSign_end=dupSign_end, _isDebug_=_isDebug_, skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular, allow_nan=allow_nan, cls=cls, indent=indent, separators=separators, default=default, sort_keys=sort_keys)
+
+		try:
+			Jfile = open(Jfilepath, "w")
+			Jfile.write(Jstr)
+			Jfile.close()
+		except Exception as e:
+			if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

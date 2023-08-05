@@ -177,12 +177,55 @@ print(JDKSObject.getObject())
 
 ### JSON_DUPLICATE_KEYS.dumps(`dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=True, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
 _Serialize a JSON object to a JSON format string_
+- `dupSign_start`: 
+- `dupSign_end`: 
+- `_isDebug_`: Show/ Hide debug error messages
+- For remaining arguments, please refer to [json.dump()](https://docs.python.org/3/library/json.html#json.dump)
 ```python
+import json_duplicate_keys as jdks
+
+Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}'
+
+JDKSObject = jdks.loads(Jstr)
+
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
+
+JDKSObject.delete("version")
+JDKSObject.delete("release||$0$")
+JDKSObject.delete("snapshot")
+
+print(JDKSObject.dumps())
+# OUTPUT: {"author": "truocphan", "version": "latest", "release": []}
 ```
 
 ### JSON_DUPLICATE_KEYS.dump(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=True, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
 _Serialize a JSON object to a JSON format string and write to a file_
+- `Jfilepath`: the path to the file to save the JSON format string
+- `dupSign_start`: 
+- `dupSign_end`: 
+- `_isDebug_`: Show/ Hide debug error messages
+- For remaining arguments, please refer to [json.dump()](https://docs.python.org/3/library/json.html#json.dump)
 ```python
+import json_duplicate_keys as jdks
+
+Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}'
+
+JDKSObject = jdks.loads(Jstr)
+
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
+
+JDKSObject.delete("version")
+JDKSObject.delete("release||$0$")
+JDKSObject.delete("snapshot")
+
+Jfilepath = "/path/to/file.json"
+JDKSObject.dump(Jfilepath)
+
+JDKSObject_load = jdks.load(Jfilepath)
+print(JDKSObject_load.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': 'latest', 'release': []}
 ```
 
 ### JSON_DUPLICATE_KEYS.flatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=True)
