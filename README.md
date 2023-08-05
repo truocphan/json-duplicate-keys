@@ -152,7 +152,27 @@ print(JDKSObject.getObject())
 ```
 
 ### JSON_DUPLICATE_KEYS.delete(`name`, `separator`="||", `parse_index`="$", `_isDebug_`=True)
+_Delete a key-value pair in a JSON object by key `name`_
+- `name`: the key name of the JSON object. Supported flatten key name format
+- `separator`: 
+- `parse_index`: 
+- `_isDebug_`: Show/ Hide debug error messages
 ```python
+import json_duplicate_keys as jdks
+
+Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}'
+
+JDKSObject = jdks.loads(Jstr)
+
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
+
+JDKSObject.delete("version")
+JDKSObject.delete("release||$0$")
+JDKSObject.delete("snapshot")
+
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version{{{_2_}}}': 'latest', 'release': []}
 ```
 
 ### JSON_DUPLICATE_KEYS.dumps(`dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=True, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)

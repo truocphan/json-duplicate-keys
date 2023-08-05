@@ -251,24 +251,28 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # #  delete   # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# def delete(self, name, separator="||", parse_index="$"):
-	# 	import re
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # #  delete   # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	def delete(self, name, separator="||", parse_index="$", _isDebug_=True):
+		import re
 
-	# 	if self.get(name, separator=separator, parse_index=parse_index) != "JSON_DUPLICATE_KEYS_NOT_FOUND":
-	# 		exec_expression = "del self.getObject()"
-	# 		for k in name.split(separator):
-	# 			if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", k):
-	# 				exec_expression += "["+k.split(parse_index)[1]+"]"
-	# 			else:
-	# 				exec_expression += "["+repr(k)+"]"
+		if self.get(name, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_) != "JSON_DUPLICATE_KEYS_NOT_FOUND":
+			try:
+				exec_expression = "del self.getObject()"
 
-	# 		exec(exec_expression)
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+				for k in name.split(separator):
+					if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", k):
+						exec_expression += "["+k.split(parse_index)[1]+"]"
+					else:
+						exec_expression += "["+repr(k)+"]"
+
+				exec(exec_expression)
+			except Exception as e:
+				if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
