@@ -37,6 +37,7 @@ print(JDKSObject)
 
 # OUTPUT: <json_duplicate_keys.JSON_DUPLICATE_KEYS object at 0x00000270AE987940>
 ```
+---
 
 ### load(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=True)
 _Deserialize a JSON format string from a file to a class `JSON_DUPLICATE_KEYS`_
@@ -58,6 +59,7 @@ print(JDKSObject)
 
 # OUTPUT: <json_duplicate_keys.JSON_DUPLICATE_KEYS object at 0x00000270AE986D40>
 ```
+---
 
 ### JSON_DUPLICATE_KEYS.getObject()
 _Get the JSON object_
@@ -72,6 +74,7 @@ print(JDKSObject.getObject())
 
 # OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': '22.3.3', 'version{{{_2_}}}': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
 ```
+---
 
 ### JSON_DUPLICATE_KEYS.get(`name`, `separator`="||", `parse_index`="$", `_isDebug_`=True)
 _Get value in the JSON object by `name`_
@@ -95,11 +98,12 @@ print(JDKSObject.get("release||$0$"))
 print(JDKSObject.get("snapshot||author"))
 # OUTPUT: truocphan
 ```
+---
 
 ### JSON_DUPLICATE_KEYS.set(`name`, `value`, `separator`="||", `parse_index`="$", `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=True)
 _Set a new `name` and `value` for the JSON object_
-- `name`: 
-- `value`: 
+- `name`: new key name for the JSON object. Supported flat key name format
+- `value`: value for key `name`
 - `separator`: 
 - `parse_index`: 
 - `dupSign_start`: 
@@ -109,23 +113,56 @@ _Set a new `name` and `value` for the JSON object_
 ```python
 import json_duplicate_keys as jdks
 
-JDKSObject = jdks.loads('{}')
+Jstr = '{}'
+JDKSObject = jdks.loads(Jstr)
+
 print(JDKSObject.getObject())
-# OUTPUT: 
+# OUTPUT: {}
 
 JDKSObject.set("author", "truocphan")
 print(JDKSObject.getObject())
-# OUTPUT: 
+# OUTPUT: {'author': 'truocphan'}
 
 JDKSObject.set("version", "22.3.3")
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3'}
+
 JDKSObject.set("version", "latest")
 print(JDKSObject.getObject())
-# OUTPUT: 
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest'}
 
-JDKSObject.set("release||$0$||version", "latest")
+JDKSObject.set("release", [{"version": "latest"}])
 print(JDKSObject.getObject())
-# OUTPUT: 
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}]}
+
+JDKSObject.set("snapshot", {})
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {}}
+
+JDKSObject.set("snapshot||author", "truocphan")
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan'}}
+
+
+Jstr = '[]'
+JDKSObject = jdks.loads(Jstr)
+
+print(JDKSObject.getObject())
+# OUTPUT: []
+
+JDKSObject.set("author", "truocphan")
+print(JDKSObject.getObject())
+# OUTPUT: [{'author': 'truocphan'}]
+
+JDKSObject.set("release", [])
+print(JDKSObject.getObject())
+# OUTPUT: [{'author': 'truocphan'}, {'release': []}]
+
+JDKSObject.set("$1$||release||", {"version": "latest"})
+print(JDKSObject.getObject())
+# OUTPUT: [{'author': 'truocphan'}, {'release': [{'version': 'latest'}]}]
 ```
+---
 
 ### JSON_DUPLICATE_KEYS.update(`name`, `value`, `separator`="||", `parse_index`="$", `_isDebug_`=True)
 _Update new `value` for existing `name` in the JSON object_
@@ -150,6 +187,7 @@ JDKSObject.update("snapshot||version", "latest")
 print(JDKSObject.getObject())
 # OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': ['22.3.3', 'latest'], 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': 'latest', 'release': [{'version': 'latest'}]}}
 ```
+---
 
 ### JSON_DUPLICATE_KEYS.delete(`name`, `separator`="||", `parse_index`="$", `_isDebug_`=True)
 _Delete a key-value pair in a JSON object by key `name`_
@@ -174,6 +212,7 @@ JDKSObject.delete("snapshot")
 print(JDKSObject.getObject())
 # OUTPUT: {'author': 'truocphan', 'version{{{_2_}}}': 'latest', 'release': []}
 ```
+---
 
 ### JSON_DUPLICATE_KEYS.dumps(`dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=True, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
 _Serialize a JSON object to a JSON format string_
@@ -198,6 +237,7 @@ JDKSObject.delete("snapshot")
 print(JDKSObject.dumps())
 # OUTPUT: {"author": "truocphan", "version": "latest", "release": []}
 ```
+---
 
 ### JSON_DUPLICATE_KEYS.dump(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=True, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
 _Serialize a JSON object to a JSON format string and write to a file_
@@ -227,6 +267,7 @@ JDKSObject_load = jdks.load(Jfilepath)
 print(JDKSObject_load.getObject())
 # OUTPUT: {'author': 'truocphan', 'version': 'latest', 'release': []}
 ```
+---
 
 ### JSON_DUPLICATE_KEYS.flatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=True)
 _Flatten a JSON object to a single key-value pairs_
@@ -249,6 +290,7 @@ JDKSObject.flatten()
 print(JDKSObject.getObject())
 # OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release||$0$||version': 'latest', 'snapshot||author': 'truocphan', 'snapshot||version': '22.3.3', 'snapshot||release||$0$||version': 'latest'}
 ```
+---
 
 ### JSON_DUPLICATE_KEYS.unflatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=True)
 _Unflatten a flattened JSON object back to a JSON object_
@@ -257,4 +299,18 @@ _Unflatten a flattened JSON object back to a JSON object_
 - `ordered_dict`: preserves the order in which the Keys are inserted
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
+import json_duplicate_keys as jdks
+
+Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "release||$0$||version": "latest", "snapshot||author": "truocphan", "snapshot||version": "22.3.3", "snapshot||release||$0$||version": "latest"}'
+
+JDKSObject = jdks.loads(Jstr)
+
+print(JDKSObject.getObject())
+# OUTPUT: 
+
+JDKSObject.unflatten()
+
+print(JDKSObject.getObject())
+# OUTPUT: 
 ```
+---
