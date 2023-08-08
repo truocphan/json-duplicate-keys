@@ -5,6 +5,12 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 	import json, re
 	from collections import OrderedDict
 
+	# User input data type validation
+	if type(dupSign_start) != str: dupSign_start = "{{{"
+	if type(dupSign_end) != str: dupSign_end = "}}}"
+	if type(ordered_dict) != bool: ordered_dict = False
+	if type(_isDebug_) != bool: _isDebug_ = True
+
 	if type(Jstr) in [str]:
 		def __convert_Jloads_to_Jobj(Jloads, Jobj):
 			if type(Jloads) in [dict, OrderedDict]:
@@ -51,21 +57,6 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 						__convert_Jloads_to_Jobj(Jloads[i], Jobj[i])
 
 		try:
-			# User input data type validation
-			try:
-				if type(dupSign_start) not in [str, unicode] or len(dupSign_start) == 0: dupSign_start = "{{{"
-			except Exception as e:
-				if type(dupSign_start) != str or len(dupSign_start) == 0: dupSign_start = "{{{"
-
-			try:
-				if type(dupSign_end) not in [str, unicode] or len(dupSign_end) == 0: dupSign_end = "}}}"
-			except Exception as e:
-				if type(dupSign_end) != str or len(dupSign_end) == 0: dupSign_end = "}}}"
-
-			if type(ordered_dict) != bool: ordered_dict = False
-			if type(_isDebug_) != bool: _isDebug_ = True
-
-
 			Jloads = json.loads(Jstr)
 			if ordered_dict:
 				Jloads = json.loads(Jstr, object_pairs_hook=OrderedDict)
@@ -297,7 +288,7 @@ class JSON_DUPLICATE_KEYS:
 
 							exec(exec_expression+"["+repr(name_split_lastKey)+"]="+repr(value))
 						else:
-							if _isDebug_: print("\x1b[31m[-] KeyNameInvalidError: {}\x1b[0m".format(separator.join(name_split_first)))
+							if _isDebug_: print("\x1b[31m[-] KeyNameNotExistError: {}\x1b[0m".format(separator.join(name_split_first)))
 					# Add new key
 					elif len(name_split_first) == 0:
 						if type(self.getObject()) == list:
@@ -305,7 +296,7 @@ class JSON_DUPLICATE_KEYS:
 								self.__Jobj.append(value)
 							else:
 								self.__Jobj.append({name_split_lastKey: value})
-						elif type(self.getObject()) == dict:
+						else:
 							self.__Jobj[name_split_lastKey] = value
 					else:
 						if _isDebug_: print("\x1b[31m[-] KeyNameInvalidError: {}\x1b[0m".format(separator.join(name_split_first)))
@@ -387,22 +378,15 @@ class JSON_DUPLICATE_KEYS:
 		import json, re
 		from collections import OrderedDict
 
-		if type(self.getObject()) in [list, dict, OrderedDict]:
-			try:
-				if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
-			except Exception as e:
-				if type(dupSign_start) != str: dupSign_start = "{{{"
+		# User input data type validation
+		if type(dupSign_start) != str: dupSign_start = "{{{"
+		if type(dupSign_end) != str: dupSign_end = "}}}"
+		if type(_isDebug_) != bool: _isDebug_ = True
 
+		if type(self.getObject()) in [list, dict, OrderedDict]:
 			dupSign_start_escape_regex = re.escape(json.dumps({dupSign_start:""})[2:-6])
 
-
-			try:
-				if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
-			except Exception as e:
-				if type(dupSign_end) != str: dupSign_end = "}}}"
-
 			dupSign_end_escape_regex = re.escape(json.dumps({dupSign_end:""})[2:-6])
-
 
 			return re.sub(r'{dupSign_start}_\d+_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape_regex, dupSign_end=dupSign_end_escape_regex), '":', json.dumps(self.getObject(), skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular, allow_nan=allow_nan, cls=cls, indent=indent, separators=separators, default=default, sort_keys=sort_keys))
 		else:
@@ -491,6 +475,12 @@ class JSON_DUPLICATE_KEYS:
 	def unflatten(self, separator="||", parse_index="$", ordered_dict=False, _isDebug_=True):
 		import re
 		from collections import OrderedDict
+
+		# User input data type validation
+		if type(separator) != str: separator = "||"
+		if type(parse_index) != str: parse_index = "$"
+		if type(ordered_dict) != bool: ordered_dict = False
+		if type(_isDebug_) != bool: _isDebug_ = True
 
 		if type(self.getObject()) in [dict, OrderedDict]:
 			if len(self.getObject()) > 0:

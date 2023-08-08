@@ -34,7 +34,6 @@ Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "relea
 JDKSObject = jdks.loads(Jstr)
 
 print(JDKSObject)
-
 # OUTPUT: <json_duplicate_keys.JSON_DUPLICATE_KEYS object at 0x00000270AE987940>
 ```
 ---
@@ -56,7 +55,6 @@ Jfilepath = "/path/to/file.json"
 JDKSObject = jdks.load(Jfilepath)
 
 print(JDKSObject)
-
 # OUTPUT: <json_duplicate_keys.JSON_DUPLICATE_KEYS object at 0x00000270AE986D40>
 ```
 ---
@@ -71,7 +69,6 @@ Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "relea
 JDKSObject = jdks.loads(Jstr)
 
 print(JDKSObject.getObject())
-
 # OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': '22.3.3', 'version{{{_2_}}}': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
 ```
 ---
