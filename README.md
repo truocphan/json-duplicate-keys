@@ -303,11 +303,11 @@ Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "relea
 JDKSObject = jdks.loads(Jstr)
 
 print(JDKSObject.getObject())
-# OUTPUT: 
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release||$0$||version': 'latest', 'snapshot||author': 'truocphan', 'snapshot||version': '22.3.3', 'snapshot||release||$0$||version': 'latest'}
 
 JDKSObject.unflatten()
 
 print(JDKSObject.getObject())
-# OUTPUT: 
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
 ```
 ---
