@@ -19,7 +19,20 @@ pip install json_duplicate_keys
 ```
 
 ## Basic Usage
-### loads(`Jstr`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=True)
+### normalize_key(`name`, `dupSign_start`="{{{", `dupSign_end`="}}}")
+_Normalize Key name_
+- `name`: key name
+- `dupSign_start`: 
+- `dupSign_end`: 
+```python
+import json_duplicate_keys as jdks
+
+print(jdks.normalize_key("version{{{_2_}}}"))
+# OUTPUT: version
+```
+---
+
+### loads(`Jstr`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=False)
 _Deserialize a JSON format string to a class `JSON_DUPLICATE_KEYS`_
 - `Jstr`: a JSON format string
 - `dupSign_start`: 
@@ -38,7 +51,7 @@ print(JDKSObject)
 ```
 ---
 
-### load(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=True)
+### load(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=False)
 _Deserialize a JSON format string from a file to a class `JSON_DUPLICATE_KEYS`_
 - `Jfilepath`: The path to the file containing the JSON format string
 - `dupSign_start`: 
@@ -73,7 +86,7 @@ print(JDKSObject.getObject())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.get(`name`, `separator`="||", `parse_index`="$", `_isDebug_`=True)
+### JSON_DUPLICATE_KEYS.get(`name`, `separator`="||", `parse_index`="$", `_isDebug_`=False)
 _Get value in the JSON object by `name`_
 - `name`: the key name of the JSON object. Supported flatten key name format
 - `separator`: 
@@ -97,7 +110,7 @@ print(JDKSObject.get("snapshot||author"))
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.set(`name`, `value`, `separator`="||", `parse_index`="$", `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=True)
+### JSON_DUPLICATE_KEYS.set(`name`, `value`, `separator`="||", `parse_index`="$", `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=False)
 _Set a new `name` and `value` for the JSON object_
 - `name`: new key name for the JSON object. Supported flat key name format
 - `value`: value for key `name`
@@ -161,7 +174,7 @@ print(JDKSObject.getObject())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.update(`name`, `value`, `separator`="||", `parse_index`="$", `_isDebug_`=True)
+### JSON_DUPLICATE_KEYS.update(`name`, `value`, `separator`="||", `parse_index`="$", `_isDebug_`=False)
 _Update new `value` for existing `name` in the JSON object_
 - `name`: the key name of the JSON object. Supported flatten key name format
 - `value`: new value for key `name`
@@ -186,7 +199,7 @@ print(JDKSObject.getObject())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.delete(`name`, `separator`="||", `parse_index`="$", `_isDebug_`=True)
+### JSON_DUPLICATE_KEYS.delete(`name`, `separator`="||", `parse_index`="$", `_isDebug_`=False)
 _Delete a key-value pair in a JSON object by key `name`_
 - `name`: the key name of the JSON object. Supported flatten key name format
 - `separator`: 
@@ -211,7 +224,7 @@ print(JDKSObject.getObject())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.dumps(`dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=True, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
+### JSON_DUPLICATE_KEYS.dumps(`dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=False, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
 _Serialize a JSON object to a JSON format string_
 - `dupSign_start`: 
 - `dupSign_end`: 
@@ -236,7 +249,7 @@ print(JDKSObject.dumps())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.dump(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=True, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
+### JSON_DUPLICATE_KEYS.dump(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=False, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
 _Serialize a JSON object to a JSON format string and write to a file_
 - `Jfilepath`: the path to the file to save the JSON format string
 - `dupSign_start`: 
@@ -266,7 +279,7 @@ print(JDKSObject_load.getObject())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.flatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=True)
+### JSON_DUPLICATE_KEYS.flatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=False)
 _Flatten a JSON object to a single key-value pairs_
 - `separator`: 
 - `parse_index`: 
@@ -289,7 +302,7 @@ print(JDKSObject.getObject())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.unflatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=True)
+### JSON_DUPLICATE_KEYS.unflatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=False)
 _Unflatten a flattened JSON object back to a JSON object_
 - `separator`: 
 - `parse_index`: 
