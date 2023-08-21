@@ -5,6 +5,7 @@ Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys
     <a href="https://github.com/truocphan/json_duplicate_keys/releases/"><img src="https://img.shields.io/github/release/truocphan/json_duplicate_keys" height=30></a>
 	<a href="#"><img src="https://img.shields.io/github/downloads/truocphan/json_duplicate_keys/total" height=30></a>
 	<a href="#"><img src="https://img.shields.io/github/stars/truocphan/json_duplicate_keys" height=30></a>
+	<a href="#"><img src="https://img.shields.io/github/forks/truocphan/json_duplicate_keys" height=30></a>
 	<a href="https://github.com/truocphan/json_duplicate_keys/issues?q=is%3Aopen+is%3Aissue"><img src="https://img.shields.io/github/issues/truocphan/json_duplicate_keys" height=30></a>
 	<a href="https://github.com/truocphan/json_duplicate_keys/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed/truocphan/json_duplicate_keys" height=30></a>
 	<a href="https://pypi.org/project/json-duplicate-keys/" target="_blank"><img src="https://img.shields.io/badge/pypi-3775A9?style=for-the-badge&logo=pypi&logoColor=white" height=30></a>
