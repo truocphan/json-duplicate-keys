@@ -5,6 +5,8 @@ Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys
     <a href="https://github.com/truocphan/json_duplicate_keys/releases/"><img src="https://img.shields.io/github/release/truocphan/json_duplicate_keys" height=30></a>
 	<a href="#"><img src="https://img.shields.io/github/downloads/truocphan/json_duplicate_keys/total" height=30></a>
 	<a href="#"><img src="https://img.shields.io/github/stars/truocphan/json_duplicate_keys" height=30></a>
+	<a href="https://github.com/truocphan/json_duplicate_keys/issues?q=is%3Aopen+is%3Aissue"><img src="https://img.shields.io/github/issues/truocphan/json_duplicate_keys" height=30></a>
+	<a href="https://github.com/truocphan/json_duplicate_keys/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed/truocphan/json_duplicate_keys" height=30></a>
 	<a href="https://pypi.org/project/json-duplicate-keys/" target="_blank"><img src="https://img.shields.io/badge/pypi-3775A9?style=for-the-badge&logo=pypi&logoColor=white" height=30></a>
 	<a href="https://www.facebook.com/292706121240740" target="_blank"><img src="https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white" height=30></a>
 	<a href="https://twitter.com/truocphan" target="_blank"><img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" height=30></a>
