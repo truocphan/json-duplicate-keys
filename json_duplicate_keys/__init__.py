@@ -8,9 +8,7 @@ def normalize_key(name, dupSign_start="{{{", dupSign_end="}}}"):
 	if type(dupSign_start) != str: dupSign_start = "{{{"
 	if type(dupSign_end) != str: dupSign_end = "}}}"
 
-	if type(name) == str:
-		return re.sub('{dupSign_start}_\d+_{dupSign_end}$'.format(dupSign_start=re.escape(dupSign_start), dupSign_end=re.escape(dupSign_end)), "", name)
-	return name
+	return re.sub('{dupSign_start}_\d+_{dupSign_end}$'.format(dupSign_start=re.escape(dupSign_start), dupSign_end=re.escape(dupSign_end)), "", str(name))
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -179,7 +177,7 @@ class JSON_DUPLICATE_KEYS:
 		if type(name) != str: name = str(name)
 		if type(separator) != str: separator = "||"
 		if type(parse_index) != str: parse_index = "$"
-		if type(_isDebug_) != bool: _isDebug_ = False
+		if type(_isDebug_) != bool: _isDebug_ = False 
 
 		if type(self.getObject()) in [list, dict, OrderedDict]:
 			try:

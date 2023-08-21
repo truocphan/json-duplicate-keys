@@ -1,9 +1,6 @@
 import setuptools
 import datetime
 
-with open("README.md", "r") as fh:
-	long_description = fh.read()
-
 setuptools.setup(
 	name="json_duplicate_keys",
 	version=datetime.datetime.now().strftime("%Y.%m.%d"),
@@ -11,7 +8,7 @@ setuptools.setup(
 	license="MIT",
 	author_email="truocphan112017@gmail.com",
 	description="Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys",
-	long_description=long_description,
+	long_description=open("README.md").read(),
 	long_description_content_type="text/markdown",
 	install_requires=open("requirements.txt").read().split(),
 	url="https://github.com/truocphan/json_duplicate_keys",
