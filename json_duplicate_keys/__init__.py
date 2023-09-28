@@ -8,7 +8,7 @@ def normalize_key(name, dupSign_start="{{{", dupSign_end="}}}"):
 	if type(dupSign_start) != str: dupSign_start = "{{{"
 	if type(dupSign_end) != str: dupSign_end = "}}}"
 
-	return re.sub('{dupSign_start}_\d+_{dupSign_end}$'.format(dupSign_start=re.escape(dupSign_start), dupSign_end=re.escape(dupSign_end)), "", str(name))
+	return re.sub(r'{dupSign_start}_\d+_{dupSign_end}$'.format(dupSign_start=re.escape(dupSign_start), dupSign_end=re.escape(dupSign_end)), "", str(name))
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -31,7 +31,7 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 		def __convert_Jloads_to_Jobj(Jloads, Jobj):
 			if type(Jloads) in [dict, OrderedDict]:
 				for k in Jloads.keys():
-					_key = re.split(dupSign_start_escape_regex+"_\d+_"+dupSign_end_escape_regex+"$", k)[0]
+					_key = re.split(dupSign_start_escape_regex+r"_\d+_"+dupSign_end_escape_regex+"$", k)[0]
 
 					if _key not in Jobj.keys():
 						if type(Jloads[k]) not in [list, dict, OrderedDict]:
@@ -46,7 +46,7 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 
 							__convert_Jloads_to_Jobj(Jloads[k], Jobj[_key])
 					else:
-						countObj = len([i for i in Jobj.keys() if _key==re.split(dupSign_start_escape_regex+"_\d+_"+dupSign_end_escape_regex+"$", i)[0]])
+						countObj = len([i for i in Jobj.keys() if _key==re.split(dupSign_start_escape_regex+r"_\d+_"+dupSign_end_escape_regex+"$", i)[0]])
 						if type(Jloads[k]) not in [list, dict, OrderedDict]:
 							Jobj[_key+dupSign_start+"_"+str(countObj+1)+"_"+dupSign_end] = Jloads[k]
 						else:
@@ -189,7 +189,7 @@ class JSON_DUPLICATE_KEYS:
 					if type(Jobj) in [dict, OrderedDict] and name_split[i] in Jobj.keys():
 						Jval = Jobj[name_split[i]]
 						Jobj = Jobj[name_split[i]]
-					elif type(Jobj) in [list] and re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", name_split[i]):
+					elif type(Jobj) in [list] and re.search("^"+re.escape(parse_index)+r"\d+"+re.escape(parse_index)+"$", name_split[i]):
 						Jval = Jobj[int(name_split[i].split(parse_index)[1])]
 						Jobj = Jobj[int(name_split[i].split(parse_index)[1])]
 					else:
@@ -229,7 +229,7 @@ class JSON_DUPLICATE_KEYS:
 				name_split_first = name_split[:-1]
 				name_split_lastKey = name_split[-1]
 
-				if not re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", name_split_lastKey):
+				if not re.search("^"+re.escape(parse_index)+r"\d+"+re.escape(parse_index)+"$", name_split_lastKey):
 					"""
 					name = name_split_first||name_split_lastKey
 
@@ -264,7 +264,7 @@ class JSON_DUPLICATE_KEYS:
 
 						name_split[-1] = name_split[-1]+dupSign_start+"_"+str(index)+"_"+dupSign_end
 						for k in name_split:
-							if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", k):
+							if re.search("^"+re.escape(parse_index)+r"\d+"+re.escape(parse_index)+"$", k):
 								exec_expression += "["+k.split(parse_index)[1]+"]"
 							else:
 								exec_expression += "["+repr(k)+"]"
@@ -277,7 +277,7 @@ class JSON_DUPLICATE_KEYS:
 								exec_expression = "self.getObject()"
 
 								for k in name_split_first:
-									if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", k):
+									if re.search("^"+re.escape(parse_index)+r"\d+"+re.escape(parse_index)+"$", k):
 										exec_expression += "["+k.split(parse_index)[1]+"]"
 									else:
 										exec_expression += "["+repr(k)+"]"
@@ -287,7 +287,7 @@ class JSON_DUPLICATE_KEYS:
 								exec_expression = "self.getObject()"
 
 								for k in name_split_first:
-									if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", k):
+									if re.search("^"+re.escape(parse_index)+r"\d+"+re.escape(parse_index)+"$", k):
 										exec_expression += "["+k.split(parse_index)[1]+"]"
 									else:
 										exec_expression += "["+repr(k)+"]"
@@ -297,7 +297,7 @@ class JSON_DUPLICATE_KEYS:
 							exec_expression = "self.getObject()"
 
 							for k in name_split_first:
-								if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", k):
+								if re.search("^"+re.escape(parse_index)+r"\d+"+re.escape(parse_index)+"$", k):
 									exec_expression += "["+k.split(parse_index)[1]+"]"
 								else:
 									exec_expression += "["+repr(k)+"]"
@@ -344,7 +344,7 @@ class JSON_DUPLICATE_KEYS:
 				exec_expression = "self.getObject()"
 
 				for k in name.split(separator):
-					if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", k):
+					if re.search("^"+re.escape(parse_index)+r"\d+"+re.escape(parse_index)+"$", k):
 						exec_expression += "["+k.split(parse_index)[1]+"]"
 					else:
 						exec_expression += "["+repr(k)+"]"
@@ -374,7 +374,7 @@ class JSON_DUPLICATE_KEYS:
 				exec_expression = "del self.getObject()"
 
 				for k in name.split(separator):
-					if re.search("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$", k):
+					if re.search("^"+re.escape(parse_index)+r"\d+"+re.escape(parse_index)+"$", k):
 						exec_expression += "["+k.split(parse_index)[1]+"]"
 					else:
 						exec_expression += "["+repr(k)+"]"
@@ -501,17 +501,17 @@ class JSON_DUPLICATE_KEYS:
 		if type(self.getObject()) in [dict, OrderedDict]:
 			if len(self.getObject()) > 0:
 				try:
-					Jobj = list() if len([k for k in self.__Jobj.keys() if re.compile("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$").match(str(k).split(separator)[0])]) == len(self.__Jobj.keys()) else OrderedDict() if ordered_dict else dict()
+					Jobj = list() if len([k for k in self.__Jobj.keys() if re.compile("^"+re.escape(parse_index)+r"\d+"+re.escape(parse_index)+"$").match(str(k).split(separator)[0])]) == len(self.__Jobj.keys()) else OrderedDict() if ordered_dict else dict()
 
 					for k, v in self.__Jobj.items():
 						Jtmp = Jobj
 						Jkeys = k.split(separator)
 
 						for count, (Jkey, next_Jkeys) in enumerate(zip(Jkeys, Jkeys[1:] + [v]), 1):
-							v = next_Jkeys if count == len(Jkeys) else list() if re.compile("^"+re.escape(parse_index)+"\d+"+re.escape(parse_index)+"$").match(next_Jkeys) else OrderedDict() if ordered_dict else dict()
+							v = next_Jkeys if count == len(Jkeys) else list() if re.compile("^"+re.escape(parse_index)+r"\d+"+re.escape(parse_index)+"$").match(next_Jkeys) else OrderedDict() if ordered_dict else dict()
 
 							if type(Jtmp) == list:
-								Jkey = int(re.compile(re.escape(parse_index)+"(\d+)"+re.escape(parse_index)).match(Jkey).group(1))
+								Jkey = int(re.compile(re.escape(parse_index)+r"(\d+)"+re.escape(parse_index)).match(Jkey).group(1))
 
 								while Jkey >= len(Jtmp):
 									Jtmp.append(v)
