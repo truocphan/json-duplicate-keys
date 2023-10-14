@@ -2,7 +2,7 @@ import setuptools
 import datetime
 
 setuptools.setup(
-	name="json_duplicate_keys",
+	name="json-duplicate-keys",
 	version=datetime.datetime.now().strftime("%Y.%m.%d"),
 	author="Truoc Phan",
 	license="MIT",
@@ -11,7 +11,7 @@ setuptools.setup(
 	long_description=open("README.md").read(),
 	long_description_content_type="text/markdown",
 	install_requires=open("requirements.txt").read().split(),
-	url="https://github.com/truocphan/json_duplicate_keys",
+	url="https://github.com/truocphan/json-duplicate-keys",
 	classifiers=[
 		"Programming Language :: Python :: 3",
 		"Programming Language :: Python :: 2",
