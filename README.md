@@ -22,11 +22,12 @@ pip install json-duplicate-keys
 ```
 
 ## Basic Usage
-### normalize_key(`name`, `dupSign_start`="{{{", `dupSign_end`="}}}")
+### normalize_key(`name`, `dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=False)
 _Normalize Key name_
 - `name`: key name
 - `dupSign_start`: 
 - `dupSign_end`: 
+- `_isDebug_`: Show/ Hide debug error messages
 ```python
 import json_duplicate_keys as jdks
 
