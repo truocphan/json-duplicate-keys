@@ -17,8 +17,16 @@ Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys
 </p>
 
 ## Installation
+#### From PyPI:
 ```console
 pip install json-duplicate-keys
+```
+#### From Source:
+```console
+git clone https://github.com/truocphan/json-duplicate-keys.git
+cd json-duplicate-keys
+python setup.py build
+python setup.py install
 ```
 
 ## Basic Usage
