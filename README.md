@@ -23,7 +23,7 @@ pip install json-duplicate-keys
 ```
 #### From Source:
 ```console
-git clone https://github.com/truocphan/json-duplicate-keys.git
+git clone https://github.com/truocphan/json-duplicate-keys.git --branch <Branch/Tag>
 cd json-duplicate-keys
 python setup.py build
 python setup.py install

@@ -3,7 +3,7 @@ import datetime
 
 setuptools.setup(
 	name="json-duplicate-keys",
-	version="2023.11.26",
+	version=datetime.datetime.now().strftime("%Y.%m.%d"),
 	author="Truoc Phan",
 	license="MIT",
 	author_email="truocphan112017@gmail.com",
