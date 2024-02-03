@@ -1,12 +1,11 @@
 import setuptools
-import datetime
 
 setuptools.setup(
 	name="json-duplicate-keys",
-	version=datetime.datetime.now().strftime("%Y.%m.%d"),
-	author="Truoc Phan",
+	version="2024.2.3",
+	author="TP Cyber Security",
 	license="MIT",
-	author_email="truocphan112017@gmail.com",
+	author_email="tpcybersec2023@gmail.com",
 	description="Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys",
 	long_description=open("README.md").read(),
 	long_description_content_type="text/markdown",
