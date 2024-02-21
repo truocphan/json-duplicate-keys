@@ -236,6 +236,27 @@ print(JDKSObject.getObject())
 ```
 ---
 
+### JSON_DUPLICATE_KEYS.filter_keys(`name`, `separator`="||", `parse_index`="$", `ordered_dict`=False)
+
+- `name`:
+- `separator`:
+- `parse_index`:
+- `ordered_dict`:
+```python
+import json_duplicate_keys as jdks
+
+Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}'
+
+JDKSObject = jdks.loads(Jstr)
+
+print(JDKSObject.filter_keys("version").dumps())
+# OUTPUT: {"version": "22.3.3", "version": "latest", "release||$0$||version": "latest", "snapshot||version": "22.3.3", "snapshot||release||$0$||version": "latest"}
+
+print(JDKSObject.dumps())
+# OUTPUT: {"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}
+```
+---
+
 ### JSON_DUPLICATE_KEYS.dumps(`dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=False, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
 _Serialize a JSON object to a JSON format string_
 - `dupSign_start`: 

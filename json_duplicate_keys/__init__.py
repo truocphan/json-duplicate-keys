@@ -445,6 +445,26 @@ class JSON_DUPLICATE_KEYS:
 
 
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # filter_keys  # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	def filter_keys(self, name, separator="||", parse_index="$", ordered_dict=False):
+		import re, copy
+
+		JDKSObject = copy.deepcopy(self)
+		JDKSObject.flatten(separator=separator, parse_index=parse_index, ordered_dict=ordered_dict)
+		newJDKSObject = loads("{}", ordered_dict=ordered_dict)
+
+		for k in JDKSObject.getObject():
+			if re.search(name, k):
+				newJDKSObject.set(k, JDKSObject.get(k, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§"), separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
+
+		return newJDKSObject
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	 # # # # # # # # # # # # # # dumps # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def dumps(self, dupSign_start="{{{", dupSign_end="}}}", _isDebug_=False, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False):
