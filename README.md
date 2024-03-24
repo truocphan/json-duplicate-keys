@@ -1,13 +1,13 @@
-# JSON Duplicate Keys
+# JSON Duplicate Keys - PyPI
 Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys
 
 <p align="center">
-    <a href="https://github.com/truocphan/json_duplicate_keys/releases/"><img src="https://img.shields.io/github/release/truocphan/json_duplicate_keys" height=30></a>
-	<a href="#"><img src="https://img.shields.io/github/downloads/truocphan/json_duplicate_keys/total" height=30></a>
-	<a href="#"><img src="https://img.shields.io/github/stars/truocphan/json_duplicate_keys" height=30></a>
-	<a href="#"><img src="https://img.shields.io/github/forks/truocphan/json_duplicate_keys" height=30></a>
-	<a href="https://github.com/truocphan/json_duplicate_keys/issues?q=is%3Aopen+is%3Aissue"><img src="https://img.shields.io/github/issues/truocphan/json_duplicate_keys" height=30></a>
-	<a href="https://github.com/truocphan/json_duplicate_keys/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed/truocphan/json_duplicate_keys" height=30></a>
+    <a href="https://github.com/truocphan/json-duplicate-keys/releases/"><img src="https://img.shields.io/github/release/truocphan/json-duplicate-keys" height=30></a>
+	<a href="#"><img src="https://img.shields.io/github/downloads/truocphan/json-duplicate-keys/total" height=30></a>
+	<a href="#"><img src="https://img.shields.io/github/stars/truocphan/json-duplicate-keys" height=30></a>
+	<a href="#"><img src="https://img.shields.io/github/forks/truocphan/json-duplicate-keys" height=30></a>
+	<a href="https://github.com/truocphan/json-duplicate-keys/issues?q=is%3Aopen+is%3Aissue"><img src="https://img.shields.io/github/issues/truocphan/json-duplicate-keys" height=30></a>
+	<a href="https://github.com/truocphan/json-duplicate-keys/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed/truocphan/json-duplicate-keys" height=30></a>
 	<a href="https://pypi.org/project/json-duplicate-keys/" target="_blank"><img src="https://img.shields.io/badge/pypi-3775A9?style=for-the-badge&logo=pypi&logoColor=white" height=30></a>
 	<a href="https://www.facebook.com/61550595106970" target="_blank"><img src="https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white" height=30></a>
 	<a href="https://twitter.com/TPCyberSec" target="_blank"><img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" height=30></a>
@@ -356,4 +356,9 @@ JDKSObject.unflatten()
 print(JDKSObject.getObject())
 # OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
 ```
+---
+
+## CHANGELOG
+#### [json-duplicate-keys v2024.3.24](https://github.com/truocphan/json-duplicate-keys/tree/2024.3.24)
+- **Updated**: _normalize_key_, _loads_, _get_, _set_, _update_, _delete_
 ---

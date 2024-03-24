@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
 	name="json-duplicate-keys",
-	version="2024.2.21",
+	version="2024.3.24",
 	author="TP Cyber Security",
 	license="MIT",
 	author_email="tpcybersec2023@gmail.com",

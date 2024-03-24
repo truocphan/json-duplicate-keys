@@ -8,14 +8,12 @@ def normalize_key(name, dupSign_start="{{{", dupSign_end="}}}", _isDebug_=False)
 	if type(_isDebug_) != bool: _isDebug_ = False
 	try:
 		if type(name) not in [str, unicode]:
-			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-			exit()
+			exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 		if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
 		if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
 	except Exception as e:
 		if type(name) not in [str]:
-			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-			exit()
+			exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 		if type(dupSign_start) not in [str]: dupSign_start = "{{{"
 		if type(dupSign_end) not in [str]: dupSign_end = "}}}"
 
@@ -37,14 +35,12 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 	if type(ordered_dict) != bool: ordered_dict = False
 	try:
 		if type(Jstr) not in [str, unicode]:
-			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be str or unicode, not {}\x1b[0m".format(type(Jstr)))
-			exit()
+			exit("\x1b[31m[-] DataTypeError: the JSON object must be str or unicode, not {}\x1b[0m".format(type(Jstr)))
 		if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
 		if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
 	except Exception as e:
 		if type(Jstr) not in [str]:
-			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be str or unicode, not {}\x1b[0m".format(type(Jstr)))
-			exit()
+			exit("\x1b[31m[-] DataTypeError: the JSON object must be str or unicode, not {}\x1b[0m".format(type(Jstr)))
 		if type(dupSign_start) not in [str]: dupSign_start = "{{{"
 		if type(dupSign_end) not in [str]: dupSign_end = "}}}"
 
@@ -195,14 +191,12 @@ class JSON_DUPLICATE_KEYS:
 		if type(_isDebug_) != bool: _isDebug_ = False
 		try:
 			if type(name) not in [str, unicode]:
-				if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-				exit()
+				exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			if type(separator) not in [str, unicode]: separator = "||"
 			if type(parse_index) not in [str, unicode]: parse_index = "$"
 		except Exception as e:
 			if type(name) not in [str]:
-				if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-				exit()
+				exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			if type(separator) not in [str]: separator = "||"
 			if type(parse_index) not in [str]: parse_index = "$"
 
@@ -246,16 +240,14 @@ class JSON_DUPLICATE_KEYS:
 		if type(ordered_dict) != bool: ordered_dict = False
 		try:
 			if type(name) not in [str, unicode]:
-				if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-				exit()
+				exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			if type(separator) not in [str, unicode]: separator = "||"
 			if type(parse_index) not in [str, unicode]: parse_index = "$"
 			if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
 			if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
 		except Exception as e:
 			if type(name) not in [str]:
-				if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-				exit()
+				exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			if type(separator) not in [str]: separator = "||"
 			if type(parse_index) not in [str]: parse_index = "$"
 			if type(dupSign_start) not in [str]: dupSign_start = "{{{"
@@ -308,6 +300,7 @@ class JSON_DUPLICATE_KEYS:
 								exec_expression += "["+repr(k)+"]"
 
 						exec(exec_expression+"="+repr(value))
+						return True
 					# Add new key
 					elif self.get(separator.join(name_split_first), separator=separator, parse_index=parse_index) != "JSON_DUPLICATE_KEYS_ERROR":
 						if type(self.get(separator.join(name_split_first), separator=separator, parse_index=parse_index)) == list:
@@ -331,6 +324,7 @@ class JSON_DUPLICATE_KEYS:
 										exec_expression += "["+repr(k)+"]"
 
 								exec(exec_expression+".append({"+repr(name_split_lastKey)+":"+repr(value)+"})")
+							return True
 						elif type(self.get(separator.join(name_split_first), separator=separator, parse_index=parse_index)) == dict:
 							exec_expression = "self.getObject()"
 
@@ -341,6 +335,7 @@ class JSON_DUPLICATE_KEYS:
 									exec_expression += "["+repr(k)+"]"
 
 							exec(exec_expression+"["+repr(name_split_lastKey)+"]="+repr(value))
+							return True
 						else:
 							if _isDebug_: print("\x1b[31m[-] KeyNameNotExistError: {}\x1b[0m".format(separator.join(name_split_first)))
 					# Add new key
@@ -352,6 +347,7 @@ class JSON_DUPLICATE_KEYS:
 								self.__Jobj.append({name_split_lastKey: value})
 						else:
 							self.__Jobj[name_split_lastKey] = value
+						return True
 					else:
 						if _isDebug_: print("\x1b[31m[-] KeyNameInvalidError: {}\x1b[0m".format(separator.join(name_split_first)))
 				else:
@@ -360,6 +356,8 @@ class JSON_DUPLICATE_KEYS:
 				if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
 		else:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be list, dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
+
+		return False
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -375,14 +373,12 @@ class JSON_DUPLICATE_KEYS:
 		if type(_isDebug_) != bool: _isDebug_ = False
 		try:
 			if type(name) not in [str, unicode]:
-				if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-				exit()
+				exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			if type(separator) not in [str, unicode]: separator = "||"
 			if type(parse_index) not in [str, unicode]: parse_index = "$"
 		except Exception as e:
 			if type(name) not in [str]:
-				if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-				exit()
+				exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			if type(separator) not in [str]: separator = "||"
 			if type(parse_index) not in [str]: parse_index = "$"
 
@@ -397,8 +393,11 @@ class JSON_DUPLICATE_KEYS:
 						exec_expression += "["+repr(k)+"]"
 
 				exec(exec_expression+"="+repr(value))
+				return True
 			except Exception as e:
 				if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+
+		return False
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -415,14 +414,12 @@ class JSON_DUPLICATE_KEYS:
 
 		try:
 			if type(name) not in [str, unicode]:
-				if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-				exit()
+				exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			if type(separator) not in [str, unicode]: separator = "||"
 			if type(parse_index) not in [str, unicode]: parse_index = "$"
 		except Exception as e:
 			if type(name) not in [str]:
-				if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-				exit()
+				exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			if type(separator) not in [str]: separator = "||"
 			if type(parse_index) not in [str]: parse_index = "$"
 
@@ -437,8 +434,11 @@ class JSON_DUPLICATE_KEYS:
 						exec_expression += "["+repr(k)+"]"
 
 				exec(exec_expression)
+				return True
 			except Exception as e:
 				if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+
+		return False
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
