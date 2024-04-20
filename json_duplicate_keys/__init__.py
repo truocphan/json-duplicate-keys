@@ -454,9 +454,37 @@ class JSON_DUPLICATE_KEYS:
 		JDKSObject.flatten(separator=separator, parse_index=parse_index, ordered_dict=ordered_dict)
 		newJDKSObject = loads("{}", ordered_dict=ordered_dict)
 
-		for k in JDKSObject.getObject():
-			if re.search(name, k):
-				newJDKSObject.set(k, JDKSObject.get(k, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§"), separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
+		for k, v in JDKSObject.getObject().items():
+			if type(k) == str and type(name) == str:
+				if re.search(name, k):
+					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
+			else:
+				if name == k:
+					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
+
+		return newJDKSObject
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # filter_values  # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	def filter_values(self, value, separator="||", parse_index="$", ordered_dict=False):
+		import re, copy
+
+		JDKSObject = copy.deepcopy(self)
+		JDKSObject.flatten(separator=separator, parse_index=parse_index, ordered_dict=ordered_dict)
+		newJDKSObject = loads("{}", ordered_dict=ordered_dict)
+
+		for k, v in JDKSObject.getObject().items():
+			if type(v) == str and type(value) == str:
+				if re.search(value, v):
+					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
+			else:
+				if value == v:
+					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
 
 		return newJDKSObject
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

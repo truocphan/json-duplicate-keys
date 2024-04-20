@@ -257,6 +257,27 @@ print(JDKSObject.dumps())
 ```
 ---
 
+### JSON_DUPLICATE_KEYS.filter_values(`value`, `separator`="||", `parse_index`="$", `ordered_dict`=False)
+
+- `value`:
+- `separator`:
+- `parse_index`:
+- `ordered_dict`:
+```python
+import json_duplicate_keys as jdks
+
+Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}'
+
+JDKSObject = jdks.loads(Jstr)
+
+print(JDKSObject.filter_values("latest").dumps())
+# OUTPUT: {"version": "latest", "release||$0$||version": "latest", "snapshot||release||$0$||version": "latest"}
+
+print(JDKSObject.dumps())
+# OUTPUT: {"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}
+```
+---
+
 ### JSON_DUPLICATE_KEYS.dumps(`dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=False, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
 _Serialize a JSON object to a JSON format string_
 - `dupSign_start`: 
@@ -359,6 +380,10 @@ print(JDKSObject.getObject())
 ---
 
 ## CHANGELOG
+#### [json-duplicate-keys v2024.4.20](https://github.com/truocphan/json-duplicate-keys/tree/2024.4.20)
+- **New**: _filter_values_
+- **Updated**: _filter_keys_
+
 #### [json-duplicate-keys v2024.3.24](https://github.com/truocphan/json-duplicate-keys/tree/2024.3.24)
 - **Updated**: _normalize_key_, _loads_, _get_, _set_, _update_, _delete_
 ---
