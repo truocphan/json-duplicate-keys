@@ -380,6 +380,9 @@ print(JDKSObject.getObject())
 ---
 
 ## CHANGELOG
+#### [json-duplicate-keys v2024.7.17](https://github.com/truocphan/json-duplicate-keys/tree/2024.7.17)
+- **Fixed**: issue [#3](https://github.com/truocphan/json-duplicate-keys/issues/3) break the set function when the key's value is empty. Thanks [ptth222](https://github.com/ptth222) for reporting this issue.
+
 #### [json-duplicate-keys v2024.4.20](https://github.com/truocphan/json-duplicate-keys/tree/2024.4.20)
 - **New**: _filter_values_
 - **Updated**: _filter_keys_
