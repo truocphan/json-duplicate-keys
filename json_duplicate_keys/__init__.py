@@ -1,3 +1,8 @@
+try:
+	unicode # Python 2
+except NameError:
+	unicode = str # Python 3
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # Normalize Key name # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -7,18 +12,13 @@ def normalize_key(name, dupSign_start="{{{", dupSign_end="}}}", _isDebug_=False)
 	# User input data type validation
 	if type(_isDebug_) != bool: _isDebug_ = False
 
-	try:
-		if type(name) not in [str, unicode]: exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+	if type(name) not in [str, unicode]:
+		if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+		return False
 
-		if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
+	if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
 
-		if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
-	except Exception as e:
-		if type(name) not in [str]: exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
-
-		if type(dupSign_start) not in [str]: dupSign_start = "{{{"
-
-		if type(dupSign_end) not in [str]: dupSign_end = "}}}"
+	if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
 
 	return re.sub('{dupSign_start}_\\d+_{dupSign_end}$'.format(dupSign_start=re.escape(dupSign_start), dupSign_end=re.escape(dupSign_end)), "", name)
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -38,18 +38,13 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 
 	if type(ordered_dict) != bool: ordered_dict = False
 
-	try:
-		if type(Jstr) not in [str, unicode]: exit("\x1b[31m[-] DataTypeError: the JSON object must be str or unicode, not {}\x1b[0m".format(type(Jstr)))
+	if type(Jstr) not in [str, unicode]: 
+		if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be str or unicode, not {}\x1b[0m".format(type(Jstr)))
+		return False
 
-		if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
+	if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
 
-		if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
-	except Exception as e:
-		if type(Jstr) not in [str]: exit("\x1b[31m[-] DataTypeError: the JSON object must be str or unicode, not {}\x1b[0m".format(type(Jstr)))
-
-		if type(dupSign_start) not in [str]: dupSign_start = "{{{"
-
-		if type(dupSign_end) not in [str]: dupSign_end = "}}}"
+	if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
 
 	def __convert_Jloads_to_Jobj(Jloads, Jobj):
 		if type(Jloads) in [dict, OrderedDict]:
@@ -141,8 +136,10 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 			return JSON_DUPLICATE_KEYS(Jobj)
 		else:
 			if _isDebug_: print("\x1b[31m[-] DataError: Invalid JSON format\x1b[0m")
+			return False
 	except Exception as e:
 		if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+		return False
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -160,6 +157,7 @@ def load(Jfilepath, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, 
 		return loads(Jstr, dupSign_start=dupSign_start, dupSign_end=dupSign_end, ordered_dict=ordered_dict, _isDebug_=_isDebug_)
 	except Exception as e:
 		if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+		return False
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -189,49 +187,57 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # get # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	def get(self, name, separator="||", parse_index="$", _isDebug_=False):
+	def get(self, name, case_insensitive=False, separator="||", parse_index="$", _isDebug_=False):
 		import re
 		from collections import OrderedDict
 
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
-		try:
-			if type(name) not in [str, unicode]: exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+		if type(name) not in [str, unicode]: 
+			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+			return {"name":name, "value":"JSON_DUPLICATE_KEYS_ERROR"}
 
-			if type(separator) not in [str, unicode]: separator = "||"
+		if type(case_insensitive) != bool: case_insensitive = False
 
-			if type(parse_index) not in [str, unicode]: parse_index = "$"
-		except Exception as e:
-			if type(name) not in [str]: exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+		if type(separator) not in [str, unicode]: separator = "||"
 
-			if type(separator) not in [str]: separator = "||"
-
-			if type(parse_index) not in [str]: parse_index = "$"
+		if type(parse_index) not in [str, unicode]: parse_index = "$"
 
 		if type(self.getObject()) not in [list, dict, OrderedDict]:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be list, dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
-			return "JSON_DUPLICATE_KEYS_ERROR"
+			return {"name":name, "value":"JSON_DUPLICATE_KEYS_ERROR"}
 
-		try:
-			Jobj = self.__Jobj
-			Jval = "JSON_DUPLICATE_KEYS_ERROR"
-			name_split = name.split(separator)
+		if re.search(re.escape(separator)+"$", name):
+			if _isDebug_: print("\x1b[31m[-] KeyNameInvalidError: \x1b[0m"+name)
+			return {"name":name, "value":"JSON_DUPLICATE_KEYS_ERROR"}
 
-			for i in range(len(name_split)):
-				if type(Jobj) in [dict, OrderedDict] and name_split[i] in Jobj.keys():
-					Jval = Jobj[name_split[i]]
-					Jobj = Jobj[name_split[i]]
-				elif type(Jobj) in [list] and re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", name_split[i]):
-					Jval = Jobj[int(name_split[i].split(parse_index)[1])]
-					Jobj = Jobj[int(name_split[i].split(parse_index)[1])]
+		Jobj = JSON_DUPLICATE_KEYS(self.__Jobj)
+		Jobj.flatten()
+		Jname = []
+		Jval = self.__Jobj
+		name_split = name.split(separator)
+		for k in Jobj.getObject().keys():
+			if len(k.split(separator)) >= len(name_split):
+				if case_insensitive:
+					if separator.join(k.split(separator)[:len(name_split)]).lower() == name.lower():
+						Jname = k.split(separator)[:len(name_split)]
+						break
 				else:
-					if _isDebug_: print("\x1b[31m[-] KeyNotFoundError: \x1b[0m"+separator.join(name_split[:i+1]))
-					return "JSON_DUPLICATE_KEYS_ERROR"
-			return Jval
-		except Exception as e:
-			if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
-			return "JSON_DUPLICATE_KEYS_ERROR"
+					if separator.join(k.split(separator)[:len(name_split)]) == name:
+						Jname = name_split
+						break
+
+		if len(Jname) > 0:
+			for k in Jname:
+				if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
+					Jval = Jval[int(k.split(parse_index)[1])]
+				else:
+					Jval = Jval[k]
+			return {"name":separator.join(Jname), "value":Jval}
+		else:
+			if _isDebug_: print("\x1b[31m[-] KeyNotFoundError: \x1b[0m"+name)
+			return {"name":name, "value":"JSON_DUPLICATE_KEYS_ERROR"}
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -240,7 +246,7 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # set # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	def set(self, name, value, separator="||", parse_index="$", dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=False):
+	def set(self, name, value, case_insensitive=False, separator="||", parse_index="$", dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=False):
 		import re
 		from collections import OrderedDict
 
@@ -249,144 +255,71 @@ class JSON_DUPLICATE_KEYS:
 
 		if type(ordered_dict) != bool: ordered_dict = False
 
-		try:
-			if type(name) not in [str, unicode]: exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+		if type(name) not in [str, unicode]: 
+			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+			return False
 
-			if type(separator) not in [str, unicode]: separator = "||"
+		if type(case_insensitive) != bool: case_insensitive = False
 
-			if type(parse_index) not in [str, unicode]: parse_index = "$"
+		if type(separator) not in [str, unicode]: separator = "||"
 
-			if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
+		if type(parse_index) not in [str, unicode]: parse_index = "$"
 
-			if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
-		except Exception as e:
-			if type(name) not in [str]: exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+		if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
 
-			if type(separator) not in [str]: separator = "||"
-
-			if type(parse_index) not in [str]: parse_index = "$"
-
-			if type(dupSign_start) not in [str]: dupSign_start = "{{{"
-
-			if type(dupSign_end) not in [str]: dupSign_end = "}}}"
+		if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
 
 		if type(self.getObject()) not in [list, dict, OrderedDict]:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be list, dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
 			return False
 
-		try:
-			name_split = name.split(separator)
-			name_split_first = name_split[:-1]
-			name_split_lastKey = name_split[-1]
+		if re.search(re.escape(separator)+"$", name):
+			if _isDebug_: print("\x1b[31m[-] KeyNameInvalidError: \x1b[0m"+name)
+			return False
 
-			if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", name_split_lastKey):
-				if _isDebug_: print("\x1b[31m[-] KeyNameInvalidError: The key name does not end with the list index\x1b[0m")
-				return False
+		if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", name.split(separator)[-1]):
+			if _isDebug_: print("\x1b[31m[-] KeyNameInvalidError: The key name does not end with the list index\x1b[0m")
+			return False
 
-			"""
-			name = name_split_first||name_split_lastKey
+		Jget = self.get(name, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)
 
-			if "name" exist in "self.getObject()"
-				=> Add duplicate key
-			else if "name_split_first" exist in "self.getObject()"
-				if typeof "name_split_first" is list
-					if length of "name_split_lastKey" is 0
-						=> Add new key (append "value" to "name_split_first")
-					else
-						=> Add new key (append dict "name_split_lastKey"/"value" to "name_split_first")
-				else if typeof "name_split_first" is dict
-					=> Add new key ( name_split_first[name_split_lastKey] = value )
-			else if length of "name_split_first" is 0 => Add new key
-				if typeof self.getObject() is list
-					if length of "name_split_lastKey" is 0
-						=> Add new key (append "value" to self.__Jobj)
-					else
-						=> Add new key (append dict "name_split_lastKey"/"value" to self.__Jobj)
-				else if typeof self.getObject() is dict
-					=> Add new key ( self.__Jobj[name_split_lastKey] = value )
-			"""
-			# Add duplicate key
-			if self.get(separator.join(name_split), separator=separator, parse_index=parse_index) != "JSON_DUPLICATE_KEYS_ERROR":
-				index = 2
-				while True:
-					if self.get(separator.join(name_split)+dupSign_start+"_"+str(index)+"_"+dupSign_end, separator=separator, parse_index=parse_index) == "JSON_DUPLICATE_KEYS_ERROR":
-						break
-					index += 1
+		if Jget["value"] != "JSON_DUPLICATE_KEYS_ERROR":
+			index = 2
+			while True:
+				if self.get(Jget["name"]+dupSign_start+"_"+str(index)+"_"+dupSign_end, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)["value"] == "JSON_DUPLICATE_KEYS_ERROR":
+					break
+				index += 1
 
-				exec_expression = "self.getObject()"
+			exec_expression = "self.getObject()"
 
-				name_split[-1] = name_split[-1]+dupSign_start+"_"+str(index)+"_"+dupSign_end
-				for k in name_split:
-					if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
-						exec_expression += "["+k.split(parse_index)[1]+"]"
-					else:
-						exec_expression += "["+repr(k)+"]"
-
-				exec(exec_expression+"="+repr(value))
-				return True
-			# Add new key
-			elif self.get(separator.join(name_split_first), separator=separator, parse_index=parse_index) != "JSON_DUPLICATE_KEYS_ERROR":
-				if len(name_split_first) > 0:
-					if type(self.get(separator.join(name_split_first), separator=separator, parse_index=parse_index)) == list:
-						if name_split_lastKey == "":
-							exec_expression = "self.getObject()"
-
-							for k in name_split_first:
-								if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
-									exec_expression += "["+k.split(parse_index)[1]+"]"
-								else:
-									exec_expression += "["+repr(k)+"]"
-
-							exec(exec_expression+".append("+repr(value)+")")
-						else:
-							exec_expression = "self.getObject()"
-
-							for k in name_split_first:
-								if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
-									exec_expression += "["+k.split(parse_index)[1]+"]"
-								else:
-									exec_expression += "["+repr(k)+"]"
-
-							exec(exec_expression+".append({"+repr(name_split_lastKey)+":"+repr(value)+"})")
-						return True
-					elif type(self.get(separator.join(name_split_first), separator=separator, parse_index=parse_index)) == dict:
-						exec_expression = "self.getObject()"
-
-						for k in name_split_first:
-							if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
-								exec_expression += "["+k.split(parse_index)[1]+"]"
-							else:
-								exec_expression += "["+repr(k)+"]"
-
-						exec(exec_expression+"["+repr(name_split_lastKey)+"]="+repr(value))
-						return True
-					else:
-						if _isDebug_: print("\x1b[31m[-] KeyNameNotExistError: {}\x1b[0m".format(separator.join(name_split_first)))
+			for k in (Jget["name"]+dupSign_start+"_"+str(index)+"_"+dupSign_end).split(separator):
+				if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
+					exec_expression += "["+k.split(parse_index)[1]+"]"
 				else:
-					if type(self.getObject()) == list:
-						if name_split_lastKey == "":
-							self.__Jobj.append(value)
-						else:
-							self.__Jobj.append({name_split_lastKey: value})
-					else:
-						self.__Jobj[name_split_lastKey] = value
-					return True
-			# Add new key
-			elif len(name_split_first) == 0:
-				if type(self.getObject()) == list:
-					if name_split_lastKey == "":
-						self.__Jobj.append(value)
-					else:
-						self.__Jobj.append({name_split_lastKey: value})
-				else:
-					self.__Jobj[name_split_lastKey] = value
+					exec_expression += "["+repr(k)+"]"
+
+			exec(exec_expression+"="+repr(value))
+			return True
+		else:
+			if len(name.split(separator)) == 1:
+				self.getObject()[name] = value
 				return True
 			else:
-				if _isDebug_: print("\x1b[31m[-] KeyNameInvalidError: {}\x1b[0m".format(separator.join(name_split_first)))
-		except Exception as e:
-			if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+				if self.get(separator.join(name.split(separator)[:-1]), case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)["value"] != "JSON_DUPLICATE_KEYS_ERROR":
+					Jget = self.get(separator.join(name.split(separator)[:-1]), case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)
+					exec_expression = "self.getObject()"
 
-		return False
+					for k in Jget["name"].split(separator):
+						if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
+							exec_expression += "["+k.split(parse_index)[1]+"]"
+						else:
+							exec_expression += "["+repr(k)+"]"
+
+					exec(exec_expression+"="+repr(value))
+					return True
+				else:
+					if _isDebug_: print("\x1b[31m[-] KeyNameNotExistError: {}\x1b[0m".format(separator.join(Jget["name"].split(separator)[:-1])))
+					return False
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -395,30 +328,28 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # update # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	def update(self, name, value, separator="||", parse_index="$", _isDebug_=False):
+	def update(self, name, value, case_insensitive=False, separator="||", parse_index="$", _isDebug_=False):
 		import re
 
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
-		try:
-			if type(name) not in [str, unicode]: exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+		if type(name) not in [str, unicode]: 
+			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+			return False
 
-			if type(separator) not in [str, unicode]: separator = "||"
+		if type(case_insensitive) != bool: case_insensitive = False
 
-			if type(parse_index) not in [str, unicode]: parse_index = "$"
-		except Exception as e:
-			if type(name) not in [str]: exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+		if type(separator) not in [str, unicode]: separator = "||"
 
-			if type(separator) not in [str]: separator = "||"
+		if type(parse_index) not in [str, unicode]: parse_index = "$"
 
-			if type(parse_index) not in [str]: parse_index = "$"
-
-		if self.get(name, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_) != "JSON_DUPLICATE_KEYS_ERROR":
+		if self.get(name, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_)["value"] != "JSON_DUPLICATE_KEYS_ERROR":
+			Jname = self.get(name, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)["name"]
 			try:
 				exec_expression = "self.getObject()"
 
-				for k in name.split(separator):
+				for k in Jname.split(separator):
 					if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
 						exec_expression += "["+k.split(parse_index)[1]+"]"
 					else:
@@ -438,30 +369,28 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # #  delete   # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	def delete(self, name, separator="||", parse_index="$", _isDebug_=False):
+	def delete(self, name, case_insensitive=False, separator="||", parse_index="$", _isDebug_=False):
 		import re
 
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
-		try:
-			if type(name) not in [str, unicode]: exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+		if type(name) not in [str, unicode]: 
+			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+			return False
 
-			if type(separator) not in [str, unicode]: separator = "||"
+		if type(case_insensitive) != bool: case_insensitive = False
 
-			if type(parse_index) not in [str, unicode]: parse_index = "$"
-		except Exception as e:
-			if type(name) not in [str]: exit("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+		if type(separator) not in [str, unicode]: separator = "||"
 
-			if type(separator) not in [str]: separator = "||"
+		if type(parse_index) not in [str, unicode]: parse_index = "$"
 
-			if type(parse_index) not in [str]: parse_index = "$"
-
-		if self.get(name, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_) != "JSON_DUPLICATE_KEYS_ERROR":
+		if self.get(name, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_)["value"] != "JSON_DUPLICATE_KEYS_ERROR":
+			Jname = self.get(name, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)["name"]
 			try:
 				exec_expression = "del self.getObject()"
 
-				for k in name.split(separator):
+				for k in Jname.split(separator):
 					if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
 						exec_expression += "["+k.split(parse_index)[1]+"]"
 					else:
@@ -491,10 +420,10 @@ class JSON_DUPLICATE_KEYS:
 		for k, v in JDKSObject.getObject().items():
 			if type(k) == str and type(name) == str:
 				if re.search(name, k):
-					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
+					newJDKSObject.set(k, v, separator="!!"+separator+"!!", parse_index="!!"+parse_index+"!!", ordered_dict=ordered_dict)
 			else:
 				if name == k:
-					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
+					newJDKSObject.set(k, v, separator="!!"+separator+"!!", parse_index="!!"+parse_index+"!!", ordered_dict=ordered_dict)
 
 		return newJDKSObject
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -515,10 +444,10 @@ class JSON_DUPLICATE_KEYS:
 		for k, v in JDKSObject.getObject().items():
 			if type(v) == str and type(value) == str:
 				if re.search(value, v):
-					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
+					newJDKSObject.set(k, v, separator="!!"+separator+"!!", parse_index="!!"+parse_index+"!!", ordered_dict=ordered_dict)
 			else:
 				if value == v:
-					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
+					newJDKSObject.set(k, v, separator="!!"+separator+"!!", parse_index="!!"+parse_index+"!!", ordered_dict=ordered_dict)
 
 		return newJDKSObject
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -536,14 +465,9 @@ class JSON_DUPLICATE_KEYS:
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
-		try:
-			if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
+		if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
 
-			if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
-		except Exception as e:
-			if type(dupSign_start) not in [str]: dupSign_start = "{{{"
-
-			if type(dupSign_end) not in [str]: dupSign_end = "}}}"
+		if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
 
 		if type(self.getObject()) not in [list, dict, OrderedDict]:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be list, dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
@@ -553,7 +477,7 @@ class JSON_DUPLICATE_KEYS:
 
 		dupSign_end_escape_regex = re.escape(json.dumps({dupSign_end:""})[2:-6])
 
-		return re.sub(r'{dupSign_start}_\\d+_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape_regex, dupSign_end=dupSign_end_escape_regex), '":', json.dumps(self.getObject(), skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular, allow_nan=allow_nan, cls=cls, indent=indent, separators=separators, default=default, sort_keys=sort_keys))
+		return re.sub('{dupSign_start}_\\d+_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape_regex, dupSign_end=dupSign_end_escape_regex), '":', json.dumps(self.getObject(), skipkeys=skipkeys, ensure_ascii=ensure_ascii, check_circular=check_circular, allow_nan=allow_nan, cls=cls, indent=indent, separators=separators, default=default, sort_keys=sort_keys))
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -571,6 +495,7 @@ class JSON_DUPLICATE_KEYS:
 			Jfile.close()
 		except Exception as e:
 			if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+			return False
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -587,18 +512,13 @@ class JSON_DUPLICATE_KEYS:
 
 		if type(ordered_dict) != bool: ordered_dict = False
 
-		try:
-			if type(separator) not in [str, unicode]: separator = "||"
+		if type(separator) not in [str, unicode]: separator = "||"
 
-			if type(parse_index) not in [str, unicode]: parse_index = "$"
-		except Exception as e:
-			if type(separator) not in [str]: separator = "||"
-
-			if type(parse_index) not in [str]: parse_index = "$"
+		if type(parse_index) not in [str, unicode]: parse_index = "$"
 
 		if type(self.getObject()) not in [list, dict, OrderedDict]:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be list, dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
-			exit()
+			return False
 
 		if len(self.getObject()) > 0:
 			try:
@@ -633,8 +553,10 @@ class JSON_DUPLICATE_KEYS:
 				__convert_Jobj_to_Jflat(self.getObject())
 
 				self.__Jobj = Jflat
+				return True
 			except Exception as e:
 				if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+				return False
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -652,18 +574,13 @@ class JSON_DUPLICATE_KEYS:
 
 		if type(ordered_dict) != bool: ordered_dict = False
 
-		try:
-			if type(separator) not in [str, unicode]: separator = "||"
+		if type(separator) not in [str, unicode]: separator = "||"
 
-			if type(parse_index) not in [str, unicode]: parse_index = "$"
-		except Exception as e:
-			if type(separator) not in [str]: separator = "||"
-
-			if type(parse_index) not in [str]: parse_index = "$"
+		if type(parse_index) not in [str, unicode]: parse_index = "$"
 
 		if type(self.getObject()) not in [dict, OrderedDict]:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
-			exit()
+			return False
 
 		if len(self.getObject()) > 0:
 			try:
@@ -688,8 +605,10 @@ class JSON_DUPLICATE_KEYS:
 						Jtmp = Jtmp[Jkey]
 
 				self.__Jobj = Jobj
+				return True
 			except Exception as e:
 				if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+				return False
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

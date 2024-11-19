@@ -8,12 +8,6 @@ Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys
 	<a href="#"><img src="https://img.shields.io/github/forks/truocphan/json-duplicate-keys" height=30></a>
 	<a href="https://github.com/truocphan/json-duplicate-keys/issues?q=is%3Aopen+is%3Aissue"><img src="https://img.shields.io/github/issues/truocphan/json-duplicate-keys" height=30></a>
 	<a href="https://github.com/truocphan/json-duplicate-keys/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed/truocphan/json-duplicate-keys" height=30></a>
-	<a href="https://pypi.org/project/json-duplicate-keys/" target="_blank"><img src="https://img.shields.io/badge/pypi-3775A9?style=for-the-badge&logo=pypi&logoColor=white" height=30></a>
-	<a href="https://www.facebook.com/61550595106970" target="_blank"><img src="https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white" height=30></a>
-	<a href="https://twitter.com/TPCyberSec" target="_blank"><img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" height=30></a>
-	<a href="https://github.com/truocphan" target="_blank"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" height=30></a>
-	<a href="mailto:tpcybersec2023@gmail.com" target="_blank"><img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" height=30></a>
-	<a href="https://www.buymeacoffee.com/truocphan" target="_blank"><img src="https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" height=30></a>
 </p>
 
 ## Installation
@@ -98,9 +92,10 @@ print(JDKSObject.getObject())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.get(`name`, `separator`="||", `parse_index`="$", `_isDebug_`=False)
+### JSON_DUPLICATE_KEYS.get(`name`, `case_insensitive`=False, `separator`="||", `parse_index`="$", `_isDebug_`=False)
 _Get value in the JSON object by `name`_
 - `name`: the key name of the JSON object. Supported flatten key name format
+- `case_insensitive`: the key name case (in)sensitive
 - `separator`: 
 - `parse_index`:
 - `_isDebug_`: Show/ Hide debug error messages
@@ -122,10 +117,11 @@ print(JDKSObject.get("snapshot||author"))
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.set(`name`, `value`, `separator`="||", `parse_index`="$", `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=False)
+### JSON_DUPLICATE_KEYS.set(`name`, `value`, `case_insensitive`=False, `separator`="||", `parse_index`="$", `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=False)
 _Set a new `name` and `value` for the JSON object_
 - `name`: new key name for the JSON object. Supported flat key name format
 - `value`: value for key `name`
+- `case_insensitive`: the key name case (in)sensitive
 - `separator`: 
 - `parse_index`: 
 - `dupSign_start`: 
@@ -186,10 +182,11 @@ print(JDKSObject.getObject())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.update(`name`, `value`, `separator`="||", `parse_index`="$", `_isDebug_`=False)
+### JSON_DUPLICATE_KEYS.update(`name`, `value`, `case_insensitive`=False, `separator`="||", `parse_index`="$", `_isDebug_`=False)
 _Update new `value` for existing `name` in the JSON object_
 - `name`: the key name of the JSON object. Supported flatten key name format
 - `value`: new value for key `name`
+- `case_insensitive`: the key name case (in)sensitive
 - `separator`: 
 - `parse_index`: 
 - `_isDebug_`: Show/ Hide debug error messages
@@ -211,9 +208,10 @@ print(JDKSObject.getObject())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.delete(`name`, `separator`="||", `parse_index`="$", `_isDebug_`=False)
+### JSON_DUPLICATE_KEYS.delete(`name`, `case_insensitive`=False, `separator`="||", `parse_index`="$", `_isDebug_`=False)
 _Delete a key-value pair in a JSON object by key `name`_
 - `name`: the key name of the JSON object. Supported flatten key name format
+- `case_insensitive`: the key name case (in)sensitive
 - `separator`: 
 - `parse_index`: 
 - `_isDebug_`: Show/ Hide debug error messages
@@ -380,6 +378,9 @@ print(JDKSObject.getObject())
 ---
 
 ## CHANGELOG
+#### [json-duplicate-keys v2024.11.19](https://github.com/truocphan/json-duplicate-keys/tree/2024.11.19)
+- **Updated**: Allows getting (`JSON_DUPLICATE_KEYS.get`), setting (`JSON_DUPLICATE_KEYS.set`), updating (`JSON_DUPLICATE_KEYS.update`), deleting (`JSON_DUPLICATE_KEYS.delete`) JSON_DUPLICATE_KEYS objects with case-insensitive key names
+
 #### [json-duplicate-keys v2024.7.17](https://github.com/truocphan/json-duplicate-keys/tree/2024.7.17)
 - **Fixed**: issue [#3](https://github.com/truocphan/json-duplicate-keys/issues/3) break the set function when the key's value is empty. Thanks [ptth222](https://github.com/ptth222) for reporting this issue.
 
