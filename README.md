@@ -182,13 +182,17 @@ print(JDKSObject.getObject())
 ```
 ---
 
-### JSON_DUPLICATE_KEYS.update(`name`, `value`, `case_insensitive`=False, `separator`="||", `parse_index`="$", `_isDebug_`=False)
-_Update new `value` for existing `name` in the JSON object_
+### JSON_DUPLICATE_KEYS.update(`name`, `value`, `case_insensitive`=False, `allow_new_key`=False, `separator`="||", `parse_index`="$", `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=False)
+_Update new `value` for existing `name` or Set a new `name` in the JSON object_
 - `name`: the key name of the JSON object. Supported flatten key name format
 - `value`: new value for key `name`
 - `case_insensitive`: the key name case (in)sensitive
+- `allow_new_key`: allows to create a new key name if the key name does not exist
 - `separator`: 
 - `parse_index`: 
+- `dupSign_start`: 
+- `dupSign_end`: 
+- `ordered_dict`: preserves the order in which the Keys are inserted
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
 import json_duplicate_keys as jdks
@@ -239,7 +243,7 @@ print(JDKSObject.getObject())
 - `name`:
 - `separator`:
 - `parse_index`:
-- `ordered_dict`:
+- `ordered_dict`: preserves the order in which the Keys are inserted
 ```python
 import json_duplicate_keys as jdks
 
@@ -260,7 +264,7 @@ print(JDKSObject.dumps())
 - `value`:
 - `separator`:
 - `parse_index`:
-- `ordered_dict`:
+- `ordered_dict`: preserves the order in which the Keys are inserted
 ```python
 import json_duplicate_keys as jdks
 
@@ -378,6 +382,9 @@ print(JDKSObject.getObject())
 ---
 
 ## CHANGELOG
+#### [json-duplicate-keys v2024.11.28](https://github.com/truocphan/json-duplicate-keys/tree/2024.11.28)
+- **Fixed**: Add subkey name to empty dict of existing key name
+
 #### [json-duplicate-keys v2024.11.19](https://github.com/truocphan/json-duplicate-keys/tree/2024.11.19)
 - **Updated**: Allows getting (`JSON_DUPLICATE_KEYS.get`), setting (`JSON_DUPLICATE_KEYS.set`), updating (`JSON_DUPLICATE_KEYS.update`), deleting (`JSON_DUPLICATE_KEYS.delete`) JSON_DUPLICATE_KEYS objects with case-insensitive key names
 

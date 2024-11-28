@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 try:
 	unicode # Python 2
 except NameError:
@@ -150,9 +151,8 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 def load(Jfilepath, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=False):
 	try:
-		Jfile = open(Jfilepath)
-		Jstr = Jfile.read()
-		Jfile.close()
+		with open(Jfilepath) as Jfile:
+			Jstr = Jfile.read()
 
 		return loads(Jstr, dupSign_start=dupSign_start, dupSign_end=dupSign_end, ordered_dict=ordered_dict, _isDebug_=_isDebug_)
 	except Exception as e:
@@ -307,16 +307,20 @@ class JSON_DUPLICATE_KEYS:
 			else:
 				if self.get(separator.join(name.split(separator)[:-1]), case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)["value"] != "JSON_DUPLICATE_KEYS_ERROR":
 					Jget = self.get(separator.join(name.split(separator)[:-1]), case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)
-					exec_expression = "self.getObject()"
+					if type(Jget["value"]) in [dict, OrderedDict]:
+						exec_expression = "self.getObject()"
 
-					for k in Jget["name"].split(separator):
-						if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
-							exec_expression += "["+k.split(parse_index)[1]+"]"
-						else:
-							exec_expression += "["+repr(k)+"]"
+						for k in Jget["name"].split(separator)+[name.split(separator)[-1]]:
+							if re.search("^"+re.escape(parse_index)+"\\d+"+re.escape(parse_index)+"$", k):
+								exec_expression += "["+k.split(parse_index)[1]+"]"
+							else:
+								exec_expression += "["+repr(k)+"]"
 
-					exec(exec_expression+"="+repr(value))
-					return True
+						exec(exec_expression+"="+repr(value))
+						return True
+					else:
+						if _isDebug_: print("\x1b[31m[-] KeyNameInvalidError: \x1b[0m"+name)
+						return False
 				else:
 					if _isDebug_: print("\x1b[31m[-] KeyNameNotExistError: {}\x1b[0m".format(separator.join(Jget["name"].split(separator)[:-1])))
 					return False
@@ -328,7 +332,7 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # update # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-	def update(self, name, value, case_insensitive=False, separator="||", parse_index="$", _isDebug_=False):
+	def update(self, name, value, case_insensitive=False, allow_new_key=False, separator="||", parse_index="$", dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=False):
 		import re
 
 		# User input data type validation
@@ -344,7 +348,10 @@ class JSON_DUPLICATE_KEYS:
 
 		if type(parse_index) not in [str, unicode]: parse_index = "$"
 
-		if self.get(name, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_)["value"] != "JSON_DUPLICATE_KEYS_ERROR":
+		_debug_ = _isDebug_
+		if allow_new_key: _debug_ = False
+
+		if self.get(name, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index, _isDebug_=_debug_)["value"] != "JSON_DUPLICATE_KEYS_ERROR":
 			Jname = self.get(name, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)["name"]
 			try:
 				exec_expression = "self.getObject()"
@@ -359,6 +366,8 @@ class JSON_DUPLICATE_KEYS:
 				return True
 			except Exception as e:
 				if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
+		elif allow_new_key:
+			return self.set(name, value, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index, dupSign_start=dupSign_start, dupSign_end=dupSign_end, ordered_dict=ordered_dict, _isDebug_=_isDebug_)
 
 		return False
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -420,10 +429,10 @@ class JSON_DUPLICATE_KEYS:
 		for k, v in JDKSObject.getObject().items():
 			if type(k) == str and type(name) == str:
 				if re.search(name, k):
-					newJDKSObject.set(k, v, separator="!!"+separator+"!!", parse_index="!!"+parse_index+"!!", ordered_dict=ordered_dict)
+					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
 			else:
 				if name == k:
-					newJDKSObject.set(k, v, separator="!!"+separator+"!!", parse_index="!!"+parse_index+"!!", ordered_dict=ordered_dict)
+					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
 
 		return newJDKSObject
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -444,10 +453,10 @@ class JSON_DUPLICATE_KEYS:
 		for k, v in JDKSObject.getObject().items():
 			if type(v) == str and type(value) == str:
 				if re.search(value, v):
-					newJDKSObject.set(k, v, separator="!!"+separator+"!!", parse_index="!!"+parse_index+"!!", ordered_dict=ordered_dict)
+					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
 			else:
 				if value == v:
-					newJDKSObject.set(k, v, separator="!!"+separator+"!!", parse_index="!!"+parse_index+"!!", ordered_dict=ordered_dict)
+					newJDKSObject.set(k, v, separator="§§"+separator+"§§", parse_index="§§"+parse_index+"§§", ordered_dict=ordered_dict)
 
 		return newJDKSObject
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
