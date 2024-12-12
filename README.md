@@ -2,12 +2,15 @@
 Flatten/ Unflatten and Load(s)/ Dump(s) JSON File/ Object with Duplicate Keys
 
 <p align="center">
-    <a href="https://github.com/truocphan/json-duplicate-keys/releases/"><img src="https://img.shields.io/github/release/truocphan/json-duplicate-keys" height=30></a>
+	<a href="https://github.com/truocphan/json-duplicate-keys/releases/"><img src="https://img.shields.io/github/release/truocphan/json-duplicate-keys" height=30></a>
 	<a href="#"><img src="https://img.shields.io/github/downloads/truocphan/json-duplicate-keys/total" height=30></a>
 	<a href="#"><img src="https://img.shields.io/github/stars/truocphan/json-duplicate-keys" height=30></a>
 	<a href="#"><img src="https://img.shields.io/github/forks/truocphan/json-duplicate-keys" height=30></a>
 	<a href="https://github.com/truocphan/json-duplicate-keys/issues?q=is%3Aopen+is%3Aissue"><img src="https://img.shields.io/github/issues/truocphan/json-duplicate-keys" height=30></a>
 	<a href="https://github.com/truocphan/json-duplicate-keys/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed/truocphan/json-duplicate-keys" height=30></a>
+	<br>
+	<a href="#"><img src="https://img.shields.io/pypi/v/json-duplicate-keys" height=30></a>
+	<a href="#"><img src="https://img.shields.io/pypi/dm/json-duplicate-keys" height=30></a>
 </p>
 
 ## Installation
@@ -107,13 +110,13 @@ Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "relea
 JDKSObject = jdks.loads(Jstr)
 
 print(JDKSObject.get("version{{{_2_}}}"))
-# OUTPUT: latest
+# OUTPUT: {'name': 'version{{{_2_}}}', 'value': 'latest'}
 
 print(JDKSObject.get("release||$0$"))
-# OUTPUT: {'version': 'latest'}
+# OUTPUT: {'name': 'release||$0$', 'value': {'version': 'latest'}}
 
 print(JDKSObject.get("snapshot||author"))
-# OUTPUT: truocphan
+# OUTPUT: {'name': 'snapshot||author', 'value': 'truocphan'}
 ```
 ---
 
@@ -179,6 +182,35 @@ print(JDKSObject.getObject())
 JDKSObject.set("$1$||release||", {"version": "latest"})
 print(JDKSObject.getObject())
 # OUTPUT: [{'author': 'truocphan'}, {'release': [{'version': 'latest'}]}]
+```
+---
+
+### JSON_DUPLICATE_KEYS.insert(`name`, `value`, `position`=None, `case_insensitive`=False, `separator`="||", `parse_index`="$", `dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=False)
+_Insert `value` at `position` in value list of `name`_
+- `name`: the key name of the JSON object. Supported flatten key name format
+- `value`: new value for key `name`
+- `position`: position of the `value` to insert (default insert at the last position of the list)
+- `case_insensitive`: the key name case (in)sensitive
+- `separator`: 
+- `parse_index`: 
+- `dupSign_start`: 
+- `dupSign_end`: 
+- `_isDebug_`: Show/ Hide debug error messages
+```python
+import json_duplicate_keys as jdks
+
+Jstr = '{"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}'
+
+JDKSObject = jdks.loads(Jstr)
+
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': 'latest'}]}}
+
+JDKSObject.insert("release", {'version': '2025.1.1'})
+JDKSObject.insert("snapshot||release", {'version': '2025.1.1'}, 0)
+
+print(JDKSObject.getObject())
+# OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}, {'version': '2025.1.1'}], 'snapshot': {'author': 'truocphan', 'version': '22.3.3', 'release': [{'version': '2025.1.1'}, {'version': 'latest'}]}}
 ```
 ---
 
@@ -382,6 +414,9 @@ print(JDKSObject.getObject())
 ---
 
 ## CHANGELOG
+#### [json-duplicate-keys v2024.12.12](https://github.com/truocphan/json-duplicate-keys/tree/2024.12.12)
+- **New**: _insert_ function
+
 #### [json-duplicate-keys v2024.11.28](https://github.com/truocphan/json-duplicate-keys/tree/2024.11.28)
 - **Fixed**: Add subkey name to empty dict of existing key name
 

@@ -4,12 +4,13 @@ try:
 except NameError:
 	unicode = str # Python 3
 
+from collections import OrderedDict
+import json, re, copy
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # Normalize Key name # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 def normalize_key(name, dupSign_start="{{{", dupSign_end="}}}", _isDebug_=False):
-	import re
-
 	# User input data type validation
 	if type(_isDebug_) != bool: _isDebug_ = False
 
@@ -31,9 +32,6 @@ def normalize_key(name, dupSign_start="{{{", dupSign_end="}}}", _isDebug_=False)
 # # # # # # # # # # # # # # # loads # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=False):
-	import json, re
-	from collections import OrderedDict
-
 	# User input data type validation
 	if type(_isDebug_) != bool: _isDebug_ = False
 
@@ -169,7 +167,6 @@ def load(Jfilepath, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 class JSON_DUPLICATE_KEYS:
 	def __init__(self, Jobj):
-		from collections import OrderedDict
 		self.__Jobj = dict()
 		if type(Jobj) in [dict, OrderedDict, list]:
 			self.__Jobj = Jobj
@@ -188,9 +185,6 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # get # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def get(self, name, case_insensitive=False, separator="||", parse_index="$", _isDebug_=False):
-		import re
-		from collections import OrderedDict
-
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
@@ -247,9 +241,6 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # # # set # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def set(self, name, value, case_insensitive=False, separator="||", parse_index="$", dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=False):
-		import re
-		from collections import OrderedDict
-
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
@@ -330,11 +321,54 @@ class JSON_DUPLICATE_KEYS:
 
 
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # insert # # # # # # # # # # # # # #
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	def insert(self, name, value, position=None, case_insensitive=False, separator="||", parse_index="$", dupSign_start="{{{", dupSign_end="}}}", _isDebug_=False):
+		# User input data type validation
+		if type(_isDebug_) != bool: _isDebug_ = False
+
+		if type(name) not in [str, unicode]: 
+			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
+			return False
+
+		if type(position) != int: position = None
+
+		if type(case_insensitive) != bool: case_insensitive = False
+
+		if type(separator) not in [str, unicode]: separator = "||"
+
+		if type(parse_index) not in [str, unicode]: parse_index = "$"
+
+		if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
+
+		if type(dupSign_end) not in [str, unicode]: dupSign_end = "}}}"
+
+		if type(self.getObject()) not in [list, dict, OrderedDict]:
+			if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be list, dict or OrderedDict, not {}\x1b[0m".format(type(self.getObject())))
+			return False
+
+		if re.search(re.escape(separator)+"$", name):
+			if _isDebug_: print("\x1b[31m[-] KeyNameInvalidError: \x1b[0m"+name)
+			return False
+
+		Jget = self.get(name, case_insensitive=case_insensitive, separator=separator, parse_index=parse_index, _isDebug_=_isDebug_)
+
+		if Jget["value"] != "JSON_DUPLICATE_KEYS_ERROR":
+			if type(Jget["value"]) == list:
+				if position == None: position = len(Jget["value"])
+
+				Jget["value"].insert(position, value)
+
+				return self.update(Jget["name"], Jget["value"], separator=separator, parse_index=parse_index, dupSign_start=dupSign_start, dupSign_end=dupSign_end, _isDebug_=_isDebug_)
+			else:
+				if _isDebug_: print("\x1b[31m[-] DataTypeError: The data type of {} must be list, not {}\x1b[0m".format(Jget["name"], type(Jget["value"])))
+		return False
+
+
+	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # update # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def update(self, name, value, case_insensitive=False, allow_new_key=False, separator="||", parse_index="$", dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=False):
-		import re
-
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
@@ -379,8 +413,6 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # # #  delete   # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def delete(self, name, case_insensitive=False, separator="||", parse_index="$", _isDebug_=False):
-		import re
-
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
@@ -420,8 +452,6 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # filter_keys  # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def filter_keys(self, name, separator="||", parse_index="$", ordered_dict=False):
-		import re, copy
-
 		JDKSObject = copy.deepcopy(self)
 		JDKSObject.flatten(separator=separator, parse_index=parse_index, ordered_dict=ordered_dict)
 		newJDKSObject = loads("{}", ordered_dict=ordered_dict)
@@ -444,8 +474,6 @@ class JSON_DUPLICATE_KEYS:
 	# # # # # # # # # # # # filter_values  # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def filter_values(self, value, separator="||", parse_index="$", ordered_dict=False):
-		import re, copy
-
 		JDKSObject = copy.deepcopy(self)
 		JDKSObject.flatten(separator=separator, parse_index=parse_index, ordered_dict=ordered_dict)
 		newJDKSObject = loads("{}", ordered_dict=ordered_dict)
@@ -468,9 +496,6 @@ class JSON_DUPLICATE_KEYS:
 	 # # # # # # # # # # # # # # dumps # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def dumps(self, dupSign_start="{{{", dupSign_end="}}}", _isDebug_=False, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, cls=None, indent=None, separators=None, default=None, sort_keys=False):
-		import json, re
-		from collections import OrderedDict
-
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
@@ -514,8 +539,6 @@ class JSON_DUPLICATE_KEYS:
 	 # # # # # # # # # # # # # flatten # # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def flatten(self, separator="||", parse_index="$", ordered_dict=False, _isDebug_=False):
-		from collections import OrderedDict
-
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
@@ -575,9 +598,6 @@ class JSON_DUPLICATE_KEYS:
 	 # # # # # # # # # # # # # unflatten # # # # # # # # # # # # #
 	# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 	def unflatten(self, separator="||", parse_index="$", ordered_dict=False, _isDebug_=False):
-		import re
-		from collections import OrderedDict
-
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
