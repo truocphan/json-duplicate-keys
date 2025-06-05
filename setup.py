@@ -1,8 +1,9 @@
+from json_duplicate_keys import json_duplicate_keys_VERSION
 import setuptools
 
 setuptools.setup(
 	name="json-duplicate-keys",
-	version="2024.12.12",
+	version=json_duplicate_keys_VERSION,
 	author="TP Cyber Security",
 	license="MIT",
 	author_email="tpcybersec2023@gmail.com",
@@ -17,5 +18,5 @@ setuptools.setup(
 		"Programming Language :: Python :: Implementation :: Jython"
 	],
 	keywords=["TPCyberSec", "json", "duplicate keys", "json duplicate keys", "flatten", "unflatten"],
-	packages=["json_duplicate_keys"],
+	packages=setuptools.find_packages(),
 )

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+json_duplicate_keys_VERSION = "2025.6.6"
 try:
 	unicode # Python 2
 except NameError:
@@ -31,7 +32,7 @@ def normalize_key(name, dupSign_start="{{{", dupSign_end="}}}", _isDebug_=False)
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # loads # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=False):
+def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, skipDuplicated=False, _isDebug_=False):
 	# User input data type validation
 	if type(_isDebug_) != bool: _isDebug_ = False
 
@@ -93,6 +94,9 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 		Jloads = json.loads(Jstr)
 		if ordered_dict: Jloads = json.loads(Jstr, object_pairs_hook=OrderedDict)
 
+		if skipDuplicated:
+			return JSON_DUPLICATE_KEYS(Jloads)
+
 		if type(Jloads) in [list, dict, OrderedDict]:
 			dupSign_start_escape = "".join(["\\\\u"+hex(ord(c))[2:].zfill(4) for c in dupSign_start])
 			dupSign_start_escape_regex = re.escape(dupSign_start)
@@ -147,12 +151,12 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isD
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # load # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-def load(Jfilepath, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, _isDebug_=False):
+def load(Jfilepath, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, skipDuplicated=False, _isDebug_=False):
 	try:
 		with open(Jfilepath) as Jfile:
 			Jstr = Jfile.read()
 
-		return loads(Jstr, dupSign_start=dupSign_start, dupSign_end=dupSign_end, ordered_dict=ordered_dict, _isDebug_=_isDebug_)
+		return loads(Jstr, dupSign_start=dupSign_start, dupSign_end=dupSign_end, ordered_dict=ordered_dict, skipDuplicated=skipDuplicated, _isDebug_=_isDebug_)
 	except Exception as e:
 		if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
 		return False

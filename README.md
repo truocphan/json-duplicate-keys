@@ -41,12 +41,13 @@ print(jdks.normalize_key("version{{{_2_}}}"))
 ```
 ---
 
-### loads(`Jstr`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=False)
+### loads(`Jstr`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `skipDuplicated`=False, `_isDebug_`=False)
 _Deserialize a JSON format string to a class `JSON_DUPLICATE_KEYS`_
 - `Jstr`: a JSON format string
 - `dupSign_start`: 
 - `dupSign_end`: 
 - `ordered_dict`: preserves the order in which the Keys are inserted
+- `skipDuplicated`: Skip loading duplicate keys to improve execution performance
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
 import json_duplicate_keys as jdks
@@ -60,12 +61,13 @@ print(JDKSObject)
 ```
 ---
 
-### load(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `_isDebug_`=False)
+### load(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `skipDuplicated`=False, `_isDebug_`=False)
 _Deserialize a JSON format string from a file to a class `JSON_DUPLICATE_KEYS`_
 - `Jfilepath`: The path to the file containing the JSON format string
 - `dupSign_start`: 
 - `dupSign_end`: 
 - `ordered_dict`: preserves the order in which the Keys are inserted
+- `skipDuplicated`: Skip loading duplicate keys to improve execution performance
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
 # /path/to/file.json: {"author": "truocphan", "version": "22.3.3", "version": "latest", "release": [{"version": "latest"}], "snapshot": {"author": "truocphan", "version": "22.3.3", "release": [{"version": "latest"}]}}
@@ -414,6 +416,9 @@ print(JDKSObject.getObject())
 ---
 
 ## CHANGELOG
+#### [json-duplicate-keys v2025.6.6](https://github.com/truocphan/json-duplicate-keys/tree/2025.6.6)
+- [**Updated**] Added `skipDuplicated` parameter to `load` and `loads` functions to improve performance when parsing large JSON strings by skipping duplicate keys.
+
 #### [json-duplicate-keys v2024.12.12](https://github.com/truocphan/json-duplicate-keys/tree/2024.12.12)
 - **New**: _insert_ function
 
