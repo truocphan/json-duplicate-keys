@@ -30,8 +30,8 @@ python setup.py install
 ### normalize_key(`name`, `dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=False)
 _Normalize Key name_
 - `name`: key name
-- `dupSign_start`: 
-- `dupSign_end`: 
+- `dupSign_start`: Start symbol for marking duplicates (default: `{{{`)
+- `dupSign_end`: End symbol for marking duplicates (default: `}}}`)
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
 import json_duplicate_keys as jdks
@@ -44,8 +44,8 @@ print(jdks.normalize_key("version{{{_2_}}}"))
 ### loads(`Jstr`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `skipDuplicated`=False, `_isDebug_`=False)
 _Deserialize a JSON format string to a class `JSON_DUPLICATE_KEYS`_
 - `Jstr`: a JSON format string
-- `dupSign_start`: 
-- `dupSign_end`: 
+- `dupSign_start`: Start symbol for marking duplicates (default: `{{{`)
+- `dupSign_end`: End symbol for marking duplicates (default: `}}}`)
 - `ordered_dict`: preserves the order in which the Keys are inserted
 - `skipDuplicated`: Skip loading duplicate keys to improve execution performance
 - `_isDebug_`: Show/ Hide debug error messages
@@ -64,8 +64,8 @@ print(JDKSObject)
 ### load(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `ordered_dict`=False, `skipDuplicated`=False, `_isDebug_`=False)
 _Deserialize a JSON format string from a file to a class `JSON_DUPLICATE_KEYS`_
 - `Jfilepath`: The path to the file containing the JSON format string
-- `dupSign_start`: 
-- `dupSign_end`: 
+- `dupSign_start`: Start symbol for marking duplicates (default: `{{{`)
+- `dupSign_end`: End symbol for marking duplicates (default: `}}}`)
 - `ordered_dict`: preserves the order in which the Keys are inserted
 - `skipDuplicated`: Skip loading duplicate keys to improve execution performance
 - `_isDebug_`: Show/ Hide debug error messages
@@ -101,8 +101,8 @@ print(JDKSObject.getObject())
 _Get value in the JSON object by `name`_
 - `name`: the key name of the JSON object. Supported flatten key name format
 - `case_insensitive`: the key name case (in)sensitive
-- `separator`: 
-- `parse_index`:
+- `separator`: Separator for flatten keys (default: `||`)
+- `parse_index`: Symbol for index parsing (default: `$`)
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
 import json_duplicate_keys as jdks
@@ -127,10 +127,10 @@ _Set a new `name` and `value` for the JSON object_
 - `name`: new key name for the JSON object. Supported flat key name format
 - `value`: value for key `name`
 - `case_insensitive`: the key name case (in)sensitive
-- `separator`: 
-- `parse_index`: 
-- `dupSign_start`: 
-- `dupSign_end`: 
+- `separator`: Separator for flatten keys (default: `||`)
+- `parse_index`: Symbol for index parsing (default: `$`)
+- `dupSign_start`: Start symbol for marking duplicates (default: `{{{`)
+- `dupSign_end`: End symbol for marking duplicates (default: `}}}`)
 - `ordered_dict`: preserves the order in which the Keys are inserted
 - `_isDebug_`: Show/Hide debug error messages
 ```python
@@ -165,25 +165,6 @@ print(JDKSObject.getObject())
 JDKSObject.set("snapshot||author", "truocphan")
 print(JDKSObject.getObject())
 # OUTPUT: {'author': 'truocphan', 'version': '22.3.3', 'version{{{_2_}}}': 'latest', 'release': [{'version': 'latest'}], 'snapshot': {'author': 'truocphan'}}
-
-
-Jstr = '[]'
-JDKSObject = jdks.loads(Jstr)
-
-print(JDKSObject.getObject())
-# OUTPUT: []
-
-JDKSObject.set("author", "truocphan")
-print(JDKSObject.getObject())
-# OUTPUT: [{'author': 'truocphan'}]
-
-JDKSObject.set("release", [])
-print(JDKSObject.getObject())
-# OUTPUT: [{'author': 'truocphan'}, {'release': []}]
-
-JDKSObject.set("$1$||release||", {"version": "latest"})
-print(JDKSObject.getObject())
-# OUTPUT: [{'author': 'truocphan'}, {'release': [{'version': 'latest'}]}]
 ```
 ---
 
@@ -193,10 +174,10 @@ _Insert `value` at `position` in value list of `name`_
 - `value`: new value for key `name`
 - `position`: position of the `value` to insert (default insert at the last position of the list)
 - `case_insensitive`: the key name case (in)sensitive
-- `separator`: 
-- `parse_index`: 
-- `dupSign_start`: 
-- `dupSign_end`: 
+- `separator`: Separator for flatten keys (default: `||`)
+- `parse_index`: Symbol for index parsing (default: `$`)
+- `dupSign_start`: Start symbol for marking duplicates (default: `{{{`)
+- `dupSign_end`: End symbol for marking duplicates (default: `}}}`)
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
 import json_duplicate_keys as jdks
@@ -222,10 +203,10 @@ _Update new `value` for existing `name` or Set a new `name` in the JSON object_
 - `value`: new value for key `name`
 - `case_insensitive`: the key name case (in)sensitive
 - `allow_new_key`: allows to create a new key name if the key name does not exist
-- `separator`: 
-- `parse_index`: 
-- `dupSign_start`: 
-- `dupSign_end`: 
+- `separator`: Separator for flatten keys (default: `||`)
+- `parse_index`: Symbol for index parsing (default: `$`)
+- `dupSign_start`: Start symbol for marking duplicates (default: `{{{`)
+- `dupSign_end`: End symbol for marking duplicates (default: `}}}`)
 - `ordered_dict`: preserves the order in which the Keys are inserted
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
@@ -250,8 +231,8 @@ print(JDKSObject.getObject())
 _Delete a key-value pair in a JSON object by key `name`_
 - `name`: the key name of the JSON object. Supported flatten key name format
 - `case_insensitive`: the key name case (in)sensitive
-- `separator`: 
-- `parse_index`: 
+- `separator`: Separator for flatten keys (default: `||`)
+- `parse_index`: Symbol for index parsing (default: `$`)
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
 import json_duplicate_keys as jdks
@@ -273,10 +254,10 @@ print(JDKSObject.getObject())
 ---
 
 ### JSON_DUPLICATE_KEYS.filter_keys(`name`, `separator`="||", `parse_index`="$", `ordered_dict`=False)
-
+_Return a `JSON_DUPLICATE_KEYS` object with keys matching a pattern_
 - `name`:
-- `separator`:
-- `parse_index`:
+- `separator`: Separator for flatten keys (default: `||`)
+- `parse_index`: Symbol for index parsing (default: `$`)
 - `ordered_dict`: preserves the order in which the Keys are inserted
 ```python
 import json_duplicate_keys as jdks
@@ -294,10 +275,10 @@ print(JDKSObject.dumps())
 ---
 
 ### JSON_DUPLICATE_KEYS.filter_values(`value`, `separator`="||", `parse_index`="$", `ordered_dict`=False)
-
+_Return a `JSON_DUPLICATE_KEYS` object with values matching a pattern_
 - `value`:
-- `separator`:
-- `parse_index`:
+- `separator`: Separator for flatten keys (default: `||`)
+- `parse_index`: Symbol for index parsing (default: `$`)
 - `ordered_dict`: preserves the order in which the Keys are inserted
 ```python
 import json_duplicate_keys as jdks
@@ -316,8 +297,8 @@ print(JDKSObject.dumps())
 
 ### JSON_DUPLICATE_KEYS.dumps(`dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=False, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
 _Serialize a JSON object to a JSON format string_
-- `dupSign_start`: 
-- `dupSign_end`: 
+- `dupSign_start`: Start symbol for marking duplicates (default: `{{{`)
+- `dupSign_end`: End symbol for marking duplicates (default: `}}}`)
 - `_isDebug_`: Show/ Hide debug error messages
 - For remaining arguments, please refer to [json.dump()](https://docs.python.org/3/library/json.html#json.dump)
 ```python
@@ -342,8 +323,8 @@ print(JDKSObject.dumps())
 ### JSON_DUPLICATE_KEYS.dump(`Jfilepath`, `dupSign_start`="{{{", `dupSign_end`="}}}", `_isDebug_`=False, `skipkeys`=False, `ensure_ascii`=True, `check_circular`=True, `allow_nan`=True, `cls`=None, `indent`=None, `separators`=None, `default`=None, `sort_keys`=False)
 _Serialize a JSON object to a JSON format string and write to a file_
 - `Jfilepath`: the path to the file to save the JSON format string
-- `dupSign_start`: 
-- `dupSign_end`: 
+- `dupSign_start`: Start symbol for marking duplicates (default: `{{{`)
+- `dupSign_end`: End symbol for marking duplicates (default: `}}}`)
 - `_isDebug_`: Show/ Hide debug error messages
 - For remaining arguments, please refer to [json.dump()](https://docs.python.org/3/library/json.html#json.dump)
 ```python
@@ -371,8 +352,8 @@ print(JDKSObject_load.getObject())
 
 ### JSON_DUPLICATE_KEYS.flatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=False)
 _Flatten a JSON object to a single key-value pairs_
-- `separator`: 
-- `parse_index`: 
+- `separator`: Separator for flatten keys (default: `||`)
+- `parse_index`: Symbol for index parsing (default: `$`)
 - `ordered_dict`: preserves the order in which the Keys are inserted
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
@@ -394,8 +375,8 @@ print(JDKSObject.getObject())
 
 ### JSON_DUPLICATE_KEYS.unflatten(`separator`="||", `parse_index`="$", `ordered_dict`=False, `_isDebug_`=False)
 _Unflatten a flattened JSON object back to a JSON object_
-- `separator`: 
-- `parse_index`: 
+- `separator`: Separator for flatten keys (default: `||`)
+- `parse_index`: Symbol for index parsing (default: `$`)
 - `ordered_dict`: preserves the order in which the Keys are inserted
 - `_isDebug_`: Show/ Hide debug error messages
 ```python
@@ -416,6 +397,11 @@ print(JDKSObject.getObject())
 ---
 
 ## CHANGELOG
+#### [json-duplicate-keys v2025.7.1](https://github.com/truocphan/json-duplicate-keys/tree/2025.7.1)
+- [**Updated**] Fixed some issues when loading JSON strings with `skipDuplicated` option
+- [**Updated**] Allow loading of JSON data in byte string format
+- [**Updated**] Issue with getting and setting an empty list
+
 #### [json-duplicate-keys v2025.6.6](https://github.com/truocphan/json-duplicate-keys/tree/2025.6.6)
 - [**Updated**] Added `skipDuplicated` parameter to `load` and `loads` functions to improve performance when parsing large JSON strings by skipping duplicate keys.
 

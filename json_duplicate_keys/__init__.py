@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-json_duplicate_keys_VERSION = "2025.6.6"
+json_duplicate_keys_VERSION = "2025.7.1"
+
 try:
 	unicode # Python 2
 except NameError:
@@ -36,10 +37,12 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, skip
 	# User input data type validation
 	if type(_isDebug_) != bool: _isDebug_ = False
 
+	if type(skipDuplicated) != bool: skipDuplicated = False
+
 	if type(ordered_dict) != bool: ordered_dict = False
 
-	if type(Jstr) not in [str, unicode]: 
-		if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be str or unicode, not {}\x1b[0m".format(type(Jstr)))
+	if type(Jstr) not in [str, unicode, bytes]:
+		if _isDebug_: print("\x1b[31m[-] DataTypeError: the JSON object must be str, unicode or bytes, not {}\x1b[0m".format(type(Jstr)))
 		return False
 
 	if type(dupSign_start) not in [str, unicode]: dupSign_start = "{{{"
@@ -95,7 +98,11 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, skip
 		if ordered_dict: Jloads = json.loads(Jstr, object_pairs_hook=OrderedDict)
 
 		if skipDuplicated:
-			return JSON_DUPLICATE_KEYS(Jloads)
+			if type(Jloads) in [list, dict, OrderedDict]:
+				return JSON_DUPLICATE_KEYS(Jloads)
+			else:
+				if _isDebug_: print("\x1b[31m[-] DataError: Invalid JSON format\x1b[0m")
+				return False
 
 		if type(Jloads) in [list, dict, OrderedDict]:
 			dupSign_start_escape = "".join(["\\\\u"+hex(ord(c))[2:].zfill(4) for c in dupSign_start])
@@ -105,23 +112,41 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, skip
 			dupSign_end_escape_regex = re.escape(dupSign_end)
 
 
-			Jstr = re.sub(r'\\\\', '\x00\x01', Jstr)
-			Jstr = re.sub(r'\\"', '\x02\x03', Jstr)
-			Jstr = re.sub(r'"([^"]*)"[\s\t\r\n]*([,\]}])', '\x04\x05\\1\x04\x05\\2', Jstr)
+			if type(Jstr) == bytes:
+				Jstr = re.sub(r'\\\\'.encode(), '\x00\x01'.encode(), Jstr)
+				Jstr = re.sub(r'\\"'.encode(), '\x02\x03'.encode(), Jstr)
+				Jstr = re.sub(r'"([^"]*)"[\s\t\r\n]*([,\]}])'.encode(), '\x04\x05\\1\x04\x05\\2'.encode(), Jstr)
 
 
-			Jstr = re.sub(r'"([^"]+)"[\s\t\r\n]*:', r'"\1{dupSign_start}_dupSign_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape), Jstr)
+				Jstr = re.sub(r'"([^"]+)"[\s\t\r\n]*:'.encode(), r'"\1{dupSign_start}_dupSign_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape).encode(), Jstr)
 
-			Jstr = re.sub(r'""[\s\t\r\n]*:', '"{dupSign_start}_dupSign_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape), Jstr)
+				Jstr = re.sub(r'""[\s\t\r\n]*:'.encode(), '"{dupSign_start}_dupSign_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape).encode(), Jstr)
 
-			i = 0
-			while re.search(r'{dupSign_start}_dupSign_{dupSign_end}"[\s\t\r\n]*:'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape), Jstr):
-				Jstr = re.sub(r'{dupSign_start}_dupSign_{dupSign_end}"[\s\t\r\n]*:'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape), dupSign_start_escape+"_"+str(i)+"_"+dupSign_end_escape+'":', Jstr, 1)
-				i += 1
+				i = 0
+				while re.search(r'{dupSign_start}_dupSign_{dupSign_end}"[\s\t\r\n]*:'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape).encode(), Jstr):
+					Jstr = re.sub(r'{dupSign_start}_dupSign_{dupSign_end}"[\s\t\r\n]*:'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape).encode(), (dupSign_start_escape+"_"+str(i)+"_"+dupSign_end_escape+'":').encode(), Jstr, 1)
+					i += 1
 
-			Jstr = re.sub('\x00\x01', r'\\\\', Jstr)
-			Jstr = re.sub('\x02\x03', r'\\"', Jstr)
-			Jstr = re.sub('\x04\x05', r'"', Jstr)
+				Jstr = re.sub('\x00\x01'.encode(), r'\\\\'.encode(), Jstr)
+				Jstr = re.sub('\x02\x03'.encode(), r'\\"'.encode(), Jstr)
+				Jstr = re.sub('\x04\x05'.encode(), r'"'.encode(), Jstr)
+			else:
+				Jstr = re.sub(r'\\\\', '\x00\x01', Jstr)
+				Jstr = re.sub(r'\\"', '\x02\x03', Jstr)
+				Jstr = re.sub(r'"([^"]*)"[\s\t\r\n]*([,\]}])', '\x04\x05\\1\x04\x05\\2', Jstr)
+
+				Jstr = re.sub(r'"([^"]+)"[\s\t\r\n]*:', r'"\1{dupSign_start}_dupSign_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape), Jstr)
+
+				Jstr = re.sub(r'""[\s\t\r\n]*:', '"{dupSign_start}_dupSign_{dupSign_end}":'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape), Jstr)
+
+				i = 0
+				while re.search(r'{dupSign_start}_dupSign_{dupSign_end}"[\s\t\r\n]*:'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape), Jstr):
+					Jstr = re.sub(r'{dupSign_start}_dupSign_{dupSign_end}"[\s\t\r\n]*:'.format(dupSign_start=dupSign_start_escape, dupSign_end=dupSign_end_escape), dupSign_start_escape+"_"+str(i)+"_"+dupSign_end_escape+'":', Jstr, 1)
+					i += 1
+
+				Jstr = re.sub('\x00\x01', r'\\\\', Jstr)
+				Jstr = re.sub('\x02\x03', r'\\"', Jstr)
+				Jstr = re.sub('\x04\x05', r'"', Jstr)
 
 			Jloads = json.loads(Jstr)
 			if ordered_dict:
@@ -153,13 +178,11 @@ def loads(Jstr, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, skip
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 def load(Jfilepath, dupSign_start="{{{", dupSign_end="}}}", ordered_dict=False, skipDuplicated=False, _isDebug_=False):
 	try:
-		with open(Jfilepath) as Jfile:
-			Jstr = Jfile.read()
-
-		return loads(Jstr, dupSign_start=dupSign_start, dupSign_end=dupSign_end, ordered_dict=ordered_dict, skipDuplicated=skipDuplicated, _isDebug_=_isDebug_)
+		with open(Jfilepath) as Jfile: Jstr = Jfile.read()
 	except Exception as e:
-		if _isDebug_: print("\x1b[31m[-] ExceptionError: {}\x1b[0m".format(e))
-		return False
+		with open(Jfilepath, "rb") as Jfile: Jstr = Jfile.read()
+
+	return loads(Jstr, dupSign_start=dupSign_start, dupSign_end=dupSign_end, ordered_dict=ordered_dict, skipDuplicated=skipDuplicated, _isDebug_=_isDebug_)
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -192,7 +215,7 @@ class JSON_DUPLICATE_KEYS:
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
-		if type(name) not in [str, unicode]: 
+		if type(name) not in [str, unicode]:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			return {"name":name, "value":"JSON_DUPLICATE_KEYS_ERROR"}
 
@@ -215,16 +238,18 @@ class JSON_DUPLICATE_KEYS:
 		Jname = []
 		Jval = self.__Jobj
 		name_split = name.split(separator)
-		for k in Jobj.getObject().keys():
-			if len(k.split(separator)) >= len(name_split):
-				if case_insensitive:
-					if separator.join(k.split(separator)[:len(name_split)]).lower() == name.lower():
-						Jname = k.split(separator)[:len(name_split)]
-						break
-				else:
-					if separator.join(k.split(separator)[:len(name_split)]) == name:
-						Jname = name_split
-						break
+
+		if type(Jobj.getObject()) in [dict, OrderedDict]:
+			for k in Jobj.getObject().keys():
+				if len(k.split(separator)) >= len(name_split):
+					if case_insensitive:
+						if separator.join(k.split(separator)[:len(name_split)]).lower() == name.lower():
+							Jname = k.split(separator)[:len(name_split)]
+							break
+					else:
+						if separator.join(k.split(separator)[:len(name_split)]) == name:
+							Jname = name_split
+							break
 
 		if len(Jname) > 0:
 			for k in Jname:
@@ -250,7 +275,7 @@ class JSON_DUPLICATE_KEYS:
 
 		if type(ordered_dict) != bool: ordered_dict = False
 
-		if type(name) not in [str, unicode]: 
+		if type(name) not in [str, unicode]:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			return False
 
@@ -297,8 +322,12 @@ class JSON_DUPLICATE_KEYS:
 			return True
 		else:
 			if len(name.split(separator)) == 1:
-				self.getObject()[name] = value
-				return True
+				if type(self.getObject()) in [dict, OrderedDict]:
+					self.getObject()[name] = value
+					return True
+				else:
+					if _isDebug_: print("\x1b[31m[-] DataTypeError: Cannot set name and value for a list object\x1b[0m")
+					return False
 			else:
 				if self.get(separator.join(name.split(separator)[:-1]), case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)["value"] != "JSON_DUPLICATE_KEYS_ERROR":
 					Jget = self.get(separator.join(name.split(separator)[:-1]), case_insensitive=case_insensitive, separator=separator, parse_index=parse_index)
@@ -331,7 +360,7 @@ class JSON_DUPLICATE_KEYS:
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
-		if type(name) not in [str, unicode]: 
+		if type(name) not in [str, unicode]:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			return False
 
@@ -376,7 +405,7 @@ class JSON_DUPLICATE_KEYS:
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
-		if type(name) not in [str, unicode]: 
+		if type(name) not in [str, unicode]:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			return False
 
@@ -420,7 +449,7 @@ class JSON_DUPLICATE_KEYS:
 		# User input data type validation
 		if type(_isDebug_) != bool: _isDebug_ = False
 
-		if type(name) not in [str, unicode]: 
+		if type(name) not in [str, unicode]:
 			if _isDebug_: print("\x1b[31m[-] DataTypeError: the KEY name must be str or unicode, not {}\x1b[0m".format(type(name)))
 			return False
 
